@@ -33,8 +33,6 @@ namespace GGST_Color_Unlocker
 
         const string procName = "GGST-Win64-Shipping";
 
-        //Pattern is for the increment function when selecting a color
-
         const string colorPSNPattern = "74 08 48 8B CF E8 22 E9 22 00 0F B6 C3";
         const string colorSPPattern1 = "E8 4A 7C F8 FF 48 63 8F 28 04 00 00 0F BE 44 08 03";
         const string colorSPPattern2 = "74 24 83 BA 2C 04 00 00 00 74 1B C7 82 2C 04 00 00 00 00 00 00";
