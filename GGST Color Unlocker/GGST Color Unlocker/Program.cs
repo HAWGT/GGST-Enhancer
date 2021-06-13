@@ -88,7 +88,6 @@ namespace GGST_Color_Unlocker
                 if (pID > 0)
                 {
                     bProcOpen = m.OpenProcess(pID);
-                    //Log state change
                     if (!bOldState && bProcOpen)
                     {
                         bPatched = false;
