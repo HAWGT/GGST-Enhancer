@@ -1,0 +1,52 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "GGST Color Unlocker/1.0.0": {
+        "dependencies": {
+          "Memory.dll.x64": "1.2.21"
+        },
+        "runtime": {
+          "GGST Color Unlocker.dll": {}
+        }
+      },
+      "Memory.dll.x64/1.2.21": {
+        "dependencies": {
+          "System.Security.Principal.Windows": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Memory.dll": {
+            "assemblyVersion": "1.2.21.0",
+            "fileVersion": "1.2.21.0"
+          }
+        }
+      },
+      "System.Security.Principal.Windows/4.7.0": {}
+    }
+  },
+  "libraries": {
+    "GGST Color Unlocker/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Memory.dll.x64/1.2.21": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dVR0mxPT6O/Dl+1U+iKkOloRkEWwPy7Tbw2R3bNNiv4BAANzNMKSXP4hBHFQLr9E61FcfORVnXfBK6xGIybDKw==",
+      "path": "memory.dll.x64/1.2.21",
+      "hashPath": "memory.dll.x64.1.2.21.nupkg.sha512"
+    },
+    "System.Security.Principal.Windows/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ojD0PX0XhneCsUbAZVKdb7h/70vyYMDYs85lwEI+LngEONe/17A0cFaRFqZU+sOEidcVswYWikYOQ9PPfjlbtQ==",
+      "path": "system.security.principal.windows/4.7.0",
+      "hashPath": "system.security.principal.windows.4.7.0.nupkg.sha512"
+    }
+  }
+}

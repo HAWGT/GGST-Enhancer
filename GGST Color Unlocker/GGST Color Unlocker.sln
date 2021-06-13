@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGST Color Unlocker", "GGST Color Unlocker\GGST Color Unlocker.csproj", "{D21DB62B-7537-45FC-B7AD-63B270ACC969}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D21DB62B-7537-45FC-B7AD-63B270ACC969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21DB62B-7537-45FC-B7AD-63B270ACC969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21DB62B-7537-45FC-B7AD-63B270ACC969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21DB62B-7537-45FC-B7AD-63B270ACC969}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A23F05DC-2C8E-40CF-BDE3-5674B4C06549}
+	EndGlobalSection
+EndGlobal
