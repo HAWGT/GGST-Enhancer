@@ -10,7 +10,7 @@ namespace GGST_Color_Unlocker
 
 
     /*
-     * Guilty Gear Strive Color Unlocker for PSN & Early Purchase colors (12 and EX)
+     * Guilty Gear Strive Color Unlocker for PSN & SP Colors
      * Reversed game with Cheat Engine with VEH Debugging, otherwise the game will crash
      * Created by HAWGT
      */
