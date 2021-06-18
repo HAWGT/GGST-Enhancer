@@ -34,7 +34,7 @@ namespace GGST_Color_Unlocker
         const string procName = "GGST-Win64-Shipping";
 
         const string colorPSNPattern = "74 08 48 8B CF E8 22 E9 22 00 0F B6 C3";
-        const string colorSPPattern1 = "E8 4A 7C F8 FF 48 63 8F 28 04 00 00 0F BE 44 08 03";
+        const string colorSPPattern1 = "E8 BA 7B F8 FF 48 63 8F 28 04 00 00 0F BE 44 08 03";
         const string colorSPPattern2 = "74 24 83 BA 2C 04 00 00 00 74 1B C7 82 2C 04 00 00 00 00 00 00";
 
         static byte[] patchPSN = {
@@ -46,7 +46,7 @@ namespace GGST_Color_Unlocker
 
         static byte[] patchSP1 =
         {
-            0xE8, 0x4A, 0x7C, 0xF8, 0xFF,               //  call func
+            0xE8, 0xBA, 0x7B, 0xF8, 0xFF,               //  call func
             0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00,   //  movsxd  rcx,dword ptr [rdi+00000428]
             0xB8, 0x59, 0x00, 0x00, 0x00,               //  mov eax,59 - Replacing movsx eax,byte ptr [rax+rcx+03] SP COLOR OPEN SELECT
         };
@@ -74,7 +74,11 @@ namespace GGST_Color_Unlocker
             Console.WriteLine("+++++++++++++++++++++++++++++++++");
             Console.WriteLine("+------GGST COLOR UNLOCKER------+");
             Console.WriteLine("+++++++++++++++++++++++++++++++++\n");
-            Console.WriteLine("Log:");
+            Console.WriteLine("Expected game version: 1.03\n");
+            Console.WriteLine("You may close this window after the patch is applied.");
+            Console.WriteLine("You must reapply this patch on each launch.");
+            Console.WriteLine("Waiting for the game process...\n");
+            Console.WriteLine("Log:\n");
             thread = new Thread(Routine);
             thread.Start();
         }
@@ -150,7 +154,7 @@ namespace GGST_Color_Unlocker
 
             if (!bFound1 || !bFound2 || !bFound3)
             {
-                if (!bFirstPatch) Console.WriteLine("All patterns not found! Already patched?");
+                if (!bFirstPatch) Console.WriteLine("Warning: Couldn't find all patterns! Already patched or different game version?");
                 bFirstPatch = false;
                 bIsPatching = false;
                 return;
