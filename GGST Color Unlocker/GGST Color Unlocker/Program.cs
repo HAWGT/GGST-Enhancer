@@ -17,14 +17,6 @@ namespace GGST_Color_Unlocker
 
     class Program
     {
-
-        [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(Int32 i);
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate int AssemblyAddFunction(int x, int y);
-
         [DllImport("kernel32.dll")]
         private static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 
@@ -33,22 +25,22 @@ namespace GGST_Color_Unlocker
 
         const string procName = "GGST-Win64-Shipping";
 
-        const string colorPSNPattern = "74 08 48 8B CF E8 B2 F2 22 00 0F B6 C3";
-        const string colorSPPattern1 = "E8 9A 7A F8 FF 48 63 8F 28 04 00 00 0F BE 44 08 03";
+        const string colorPSNPattern = "74 08 48 8B CF E8 72 E9 21 00 0F B6 C3";
+        const string colorSPPattern1 = "E8 AA 73 F8 FF 48 63 8F 28 04 00 00 0F BE 44 08 03";
         const string colorSPPattern2 = "74 24 83 BA 2C 04 00 00 00 74 1B C7 82 2C 04 00 00 00 00 00 00";
 
         static byte[] patchPSN = {
             0x74, 0x80,                     //  je current+8
             0x48, 0x8B, 0xCF,               //  mov rcx,rdi
-            0xE8, 0xB2, 0xF2, 0x22, 0x00,   //  call 
-            0x90, 0x90, 0x90,               //  NOP NOP NOP - Replacing movzx eax,bl
+            0xE8, 0x72, 0xE9, 0x21, 0x00,   //  call 
+            0x90, 0x90, 0x90,               //  NOP NOP NOP - Replacing movzx eax,bl - PSN COLOR CHECK
         };
 
         static byte[] patchSP1 =
         {
-            0xE8, 0x9A, 0x7A, 0xF8, 0xFF,               //  call func
+            0xE8, 0xAA, 0x73, 0xF8, 0xFF,               //  call func
             0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00,   //  movsxd  rcx,dword ptr [rdi+00000428]
-            0xB8, 0x59, 0x00, 0x00, 0x00,               //  mov eax,59 - Replacing movsx eax,byte ptr [rax+rcx+03] SP COLOR OPEN SELECT
+            0xB8, 0x59, 0x00, 0x00, 0x00,               //  mov eax,59 - Replacing movsx eax,byte ptr [rax+rcx+03] - SP COLOR OPEN SELECT
         };
 
         static byte[] patchSP2 =
@@ -56,7 +48,7 @@ namespace GGST_Color_Unlocker
             0x74, 0x24,                                                 //  je current+24
             0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00,                   //  cmp cmp dword ptr [rdx+0000042C],00
             0x74, 0x1B,                                                 //  je current+1B
-            0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000042C],00000059 - Replacing mov [rdx+0000042C],00000000 SP COLOR CHANGE CHARACTER
+            0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000042C],00000059 - Replacing mov [rdx+0000042C],00000000 - SP COLOR CHANGE CHARACTER
         };
 
         static Mem m = new Mem();
@@ -74,7 +66,7 @@ namespace GGST_Color_Unlocker
             Console.WriteLine("+++++++++++++++++++++++++++++++++");
             Console.WriteLine("+------GGST COLOR UNLOCKER------+");
             Console.WriteLine("+++++++++++++++++++++++++++++++++\n");
-            Console.WriteLine("Expected game version: 1.05\n");
+            Console.WriteLine("Expected game version: 1.07\n");
             Console.WriteLine("You may close this window after the patch is applied.");
             Console.WriteLine("You must reapply this patch on each launch.");
             Console.WriteLine("Waiting for the game process...\n");
