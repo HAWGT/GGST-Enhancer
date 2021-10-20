@@ -72,7 +72,7 @@ namespace GGST_Color_Unlocker
             Console.WriteLine("+++++++++++++++++++++++++++++++++");
             Console.WriteLine("+------GGST COLOR UNLOCKER------+");
             Console.WriteLine("+++++++++++++++++++++++++++++++++\n");
-            Console.WriteLine("Expected game version: 1.09\n");
+            Console.WriteLine("Expected game version: 1.10\n");
             Console.WriteLine("You may close this window after the patch is applied.");
             Console.WriteLine("You must reapply this patch on each launch.");
             Console.WriteLine("Waiting for the game process...\n");
