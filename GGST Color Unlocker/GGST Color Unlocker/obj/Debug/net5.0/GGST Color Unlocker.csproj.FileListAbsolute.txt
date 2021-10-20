@@ -30,6 +30,5 @@ D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\
 D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\bin\Debug\net5.0\ref\GGST Color Unlocker.dll
 D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\bin\Debug\net5.0\GGST Color Unlocker.pdb
 D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\bin\Debug\net5.0\Memory.dll
-D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\obj\Debug\net5.0\GGST Color Unlocker.csproj.CopyComplete
 D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\obj\Debug\net5.0\GGST Color Unlocker.genruntimeconfig.cache
-D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\obj\Debug\net5.0\GGST Color Unlocker.csprojAssemblyReference.cache
+D:\Documents\GitHub\GGST-COLOR-UNLOCKER\GGST Color Unlocker\GGST Color Unlocker\obj\Debug\net5.0\GGST Color Unlocker.csproj.AssemblyReference.cache
