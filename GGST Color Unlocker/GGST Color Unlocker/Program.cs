@@ -26,25 +26,26 @@ namespace GGST_Color_Unlocker
 
         const string procName = "GGST-Win64-Shipping";
 
-        const string colorPSNPatternOffset = "GGST-Win64-Shipping.exe+0xE01F67";
-        static byte[] colorPSNPattern = { 0x74, 0x05, 0xE8, 0x42, 0xB4, 0x21, 0x00, 0x0F, 0xB6, 0xC3 };
+        const string colorPSNPatternOffset = "GGST-Win64-Shipping.exe+0xE1D274";
+        static byte[] colorPSNPattern = { 0x74, 0x08, 0x48, 0x8B, 0xCF, 0xE8, 0x52, 0xF7, 0x22, 0x00, 0x0F, 0xB6, 0xC3 };
 
-        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xBEDB71";
-        static byte[] colorSPPattern1 = { 0xE8, 0xAA, 0x6C, 0xF8, 0xFF, 0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00, 0x0F, 0xBE, 0x44, 0x08, 0x03 };
+        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xBF6701";
+        static byte[] colorSPPattern1 = { 0xE8, 0x3A, 0x58, 0xF8, 0xFF, 0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00, 0x0F, 0xBE, 0x44, 0x08, 0x03 };
 
-        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xBE4CA1";
+        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xBED831";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
         static byte[] patchPSN = {
-            0x74, 0x05,                     //  je current+2
-            0xE8, 0x42, 0xB4, 0x21, 0x00,   //  call func
+            0x74, 0x08,                     //  je current+8
+            0x48, 0x8B, 0xCF,               //  mov rcx,rdi
+            0xE8, 0x52, 0xF7, 0x22, 0x00,   //  call func
             0x90, 0x90, 0x90,               //  NOP NOP NOP - Replacing movzx eax,bl - PSN COLOR CHECK
         };
 
         static byte[] patchSP1 =
         {
-            0xE8, 0xAA, 0x6C, 0xF8, 0xFF,               //  call func
+            0xE8, 0x3A, 0x58, 0xF8, 0xFF,               //  call func
             0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00,   //  movsxd  rcx,dword ptr [rdi+00000428]
             0xB8, 0x59, 0x00, 0x00, 0x00,               //  mov eax,59 - Replacing movsx eax,byte ptr [rax+rcx+03] - SP COLOR OPEN SELECT
         };
@@ -72,7 +73,7 @@ namespace GGST_Color_Unlocker
             Console.WriteLine("+++++++++++++++++++++++++++++++++");
             Console.WriteLine("+------GGST COLOR UNLOCKER------+");
             Console.WriteLine("+++++++++++++++++++++++++++++++++\n");
-            Console.WriteLine("Expected game version: 1.10\n");
+            Console.WriteLine("Expected game version: 1.11\n");
             Console.WriteLine("You may close this window after the patch is applied.");
             Console.WriteLine("You must reapply this patch on each launch.");
             Console.WriteLine("Waiting for the game process...\n");
