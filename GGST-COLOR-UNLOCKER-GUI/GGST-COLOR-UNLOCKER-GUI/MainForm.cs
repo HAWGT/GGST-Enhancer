@@ -1,23 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using System.Diagnostics;
 using Memory;
+using System.Runtime.InteropServices;
 
-namespace GGST_Color_Unlocker
+namespace GGST_COLOR_UNLOCKER_GUI
 {
-
-
-    /*
-     * Guilty Gear Strive Color Unlocker for PSN & SP Colors
-     * Reversed game with Cheat Engine with VEH Debugger, otherwise the game will crash
-     * Created by HAWGT
-     */
-
-    class Program
+    public partial class MainForm : Form
     {
+
+        /*
+        string[][] allowedColors = new string[][]
+        {
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 28", "Color 80", "Color 90"}, //SOL
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 80", "Color 90"}, //KY
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //MAY
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //AXL
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //CHIPP
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //POTEMPKIN
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //FAUST
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //MILLIA
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //ZATO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //RAM
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //LEO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90", "Color 99" }, //NAGO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //GIO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //ANJI
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 13", "Color 14", "Color 15", "Color 16", "Color 17", "Color 18", "Color 19", "Color 20", "Color 80", "Color 90", "Color 99"}, //INO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //GOLD
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 99"}, //JACKO
+            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //HAPPY
+        };
+        */
+
+
         [DllImport("kernel32.dll")]
         private static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 
@@ -34,6 +57,15 @@ namespace GGST_Color_Unlocker
 
         const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xBED831";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+        const string charPatternOffset = "GGST-Win64-Shipping.exe+0xBF66F3";
+        static byte[] charPattern = { 0xE8, 0x48, 0x58, 0xF8, 0xFF, 0x0F, 0xBE, 0x08, 0x89, 0x8F, 0x28, 0x04, 0x00, 0x00};
+
+        byte color = 0x59;
+
+        static long psnCheckAddr = 0x0;
+        static long spCheckAddr1 = 0x0;
+        static long spCheckAddr2 = 0x0;
 
 
         static byte[] patchPSN = {
@@ -58,59 +90,76 @@ namespace GGST_Color_Unlocker
             0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000042C],00000059 - Replacing mov [rdx+0000042C],00000000 - SP COLOR CHANGE CHARACTER
         };
 
+
         static Mem m = new Mem();
-        static Thread thread;
         static int pID = 0;
         static bool bProcOpen = false;
         static bool bOldState = false;
-        static bool bQuit = false;
         static bool bPatched = false;
         static bool bIsPatching = false;
         static bool bFirstPatch = true;
 
-        static void Main(string[] args)
+
+        public MainForm()
         {
-            Console.WriteLine("+++++++++++++++++++++++++++++++++");
-            Console.WriteLine("+------GGST COLOR UNLOCKER------+");
-            Console.WriteLine("+++++++++++++++++++++++++++++++++\n");
-            Console.WriteLine("Expected game version: 1.11\n");
-            Console.WriteLine("You may close this window after the patch is applied.");
-            Console.WriteLine("You must reapply this patch on each launch.");
-            Console.WriteLine("Waiting for the game process...\n");
-            Console.WriteLine("Log:\n");
-            thread = new Thread(Routine);
-            thread.Start();
+            InitializeComponent();
         }
 
-        static void Routine()
+        private void Main_Load(object sender, EventArgs e)
         {
-            while (!bQuit)
+            background_find_game_process.DoWork += new DoWorkEventHandler(background_find_game_process_DoWork);
+            if (!background_find_game_process.IsBusy) background_find_game_process.RunWorkerAsync();
+        }
+
+        private void background_find_game_process_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (true)
             {
+
+                btn_force.Invoke((MethodInvoker)delegate
+                {
+                    btn_force.Enabled = bProcOpen;
+                });
+
                 bOldState = bProcOpen;
                 pID = m.GetProcIdFromName(procName);
+
+                lbl_pid.Invoke((MethodInvoker)delegate
+                {
+                    lbl_pid.Text = pID.ToString();
+                });
                 if (pID > 0)
                 {
                     bProcOpen = m.OpenProcess(pID);
+
+                    lbl_status.Invoke((MethodInvoker)delegate
+                    {
+                        lbl_status.Text = "RUNNING";
+                        lbl_status.ForeColor = Color.Green;
+                    });
                     if (!bOldState && bProcOpen)
                     {
                         bPatched = false;
                         bIsPatching = false;
                         bFirstPatch = true;
-                        Console.WriteLine("Game process found! PID: " + pID + "");
                     }
                     if (!bPatched && !bIsPatching && bProcOpen) CreatePatch();
                 }
                 else
                 {
+
+                    lbl_status.Invoke((MethodInvoker)delegate
+                    {
+                        lbl_status.Text = "NOT RUNNING";
+                        lbl_status.ForeColor = Color.Red;
+                    });
                     bProcOpen = false;
                     bPatched = false;
                     bIsPatching = false;
                     bFirstPatch = true;
-                    if (bOldState && !bProcOpen) Console.WriteLine("Game process closed!");
                 }
             }
         }
-
 
         private static async void CreatePatch()
         {
@@ -119,20 +168,16 @@ namespace GGST_Color_Unlocker
 
             bIsPatching = true;
 
-            long psnCheckAddr = 0x0;
-            long spCheckAddr1 = 0x0;
-            long spCheckAddr2 = 0x0;
-
             bool bFound1 = false;
             bool bFound2 = false;
             bool bFound3 = false;
 
             // PSN Color
             // Check if offset is correct
+
             if (BytesEqual(m.ReadBytes(colorPSNPatternOffset, colorPSNPattern.Length), colorPSNPattern))
             {
                 psnCheckAddr = (long)m.Get64BitCode(colorPSNPatternOffset);
-                Console.WriteLine("Offset Correct, Address from PSN color check: {0:X}", psnCheckAddr);
                 bFound1 = true;
             }
             // Otherwise AOB Scan for bytes
@@ -142,7 +187,6 @@ namespace GGST_Color_Unlocker
                 foreach (long result in addresses1)
                 {
                     psnCheckAddr = result;
-                    Console.WriteLine("Address from PSN color check: {0:X}", psnCheckAddr);
                     bFound1 = true;
                     break;
                 }
@@ -153,7 +197,6 @@ namespace GGST_Color_Unlocker
             if (BytesEqual(m.ReadBytes(colorSPPattern1Offset, colorSPPattern1.Length), colorSPPattern1))
             {
                 spCheckAddr1 = (long)m.Get64BitCode(colorSPPattern1Offset);
-                Console.WriteLine("Offset Correct, Address from menu color check: {0:X}", spCheckAddr1);
                 bFound2 = true;
             }
             // Otherwise AOB Scan for bytes
@@ -163,7 +206,6 @@ namespace GGST_Color_Unlocker
                 foreach (long result in addresses2)
                 {
                     spCheckAddr1 = result;
-                    Console.WriteLine("Address from menu color load: {0:X}", spCheckAddr1);
                     bFound2 = true;
                     break;
                 }
@@ -174,7 +216,6 @@ namespace GGST_Color_Unlocker
             if (BytesEqual(m.ReadBytes(colorSPPattern2Offset, colorSPPattern2.Length), colorSPPattern2))
             {
                 spCheckAddr2 = (long)m.Get64BitCode(colorSPPattern2Offset);
-                Console.WriteLine("Offset Correct, Address from character change color check: {0:X}", spCheckAddr2);
                 bFound3 = true;
             }
             // Otherwise AOB Scan for bytes
@@ -184,7 +225,6 @@ namespace GGST_Color_Unlocker
                 foreach (long result in addresses3)
                 {
                     spCheckAddr2 = result;
-                    Console.WriteLine("Address from character change color load: {0:X}", spCheckAddr2);
                     bFound3 = true;
                     break;
                 }
@@ -192,21 +232,21 @@ namespace GGST_Color_Unlocker
 
             if (!bFound1 || !bFound2 || !bFound3)
             {
-                if (!bFirstPatch) Console.WriteLine("Warning: Couldn't find all patterns! Already patched or different game version?");
                 bFirstPatch = false;
                 bIsPatching = false;
                 return;
             }
 
-            PatchAddr(m.pHandle, psnCheckAddr, patchPSN);
-            PatchAddr(m.pHandle, spCheckAddr1, patchSP1);
-            PatchAddr(m.pHandle, spCheckAddr2, patchSP2);
+            PatchAddr(m.mProc.Handle, psnCheckAddr, patchPSN);
+            PatchAddr(m.mProc.Handle, spCheckAddr1, patchSP1);
+            PatchAddr(m.mProc.Handle, spCheckAddr2, patchSP2);
 
             bPatched = true;
             bIsPatching = false;
 
             s.Stop();
-            Console.WriteLine("Game process patched in {0} seconds",s.Elapsed.TotalSeconds);
+
+            MessageBox.Show("Game process patched in " + s.Elapsed.TotalSeconds.ToString() + " seconds!");
 
         }
         private static bool BytesEqual(byte[] a, byte[] b)
@@ -242,5 +282,35 @@ namespace GGST_Color_Unlocker
             VirtualProtectEx(handle, (IntPtr)addr, (UIntPtr)bytes.Length, oldProtect, out _);
         }
 
+        private void btn_force_Click(object sender, EventArgs e)
+        {
+            if (bProcOpen && bPatched && spCheckAddr1 > 0 && spCheckAddr2 > 0)
+            {
+                byte[] patchSP1 =
+                {
+                    0xE8, 0x3A, 0x58, 0xF8, 0xFF,
+                    0x48, 0x63, 0x8F, 0x28, 0x04, 0x00, 0x00,
+                    0xB8, (byte)num_color.Value, 0x00, 0x00, 0x00,
+                };
+
+                byte[] patchSP2 =
+                {
+                    0x74, 0x24,
+                    0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00,
+                    0x74, 0x1B,
+                    0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, (byte)num_color.Value, 0x00, 0x00, 0x00
+                };
+
+                PatchAddr(m.mProc.Handle, spCheckAddr1, patchSP1);
+                PatchAddr(m.mProc.Handle, spCheckAddr2, patchSP2);
+
+                MessageBox.Show("Updated Color!");
+            }
+        }
+
+        private void btn_info_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is meant for game version 1.11");
+        }
     }
 }
