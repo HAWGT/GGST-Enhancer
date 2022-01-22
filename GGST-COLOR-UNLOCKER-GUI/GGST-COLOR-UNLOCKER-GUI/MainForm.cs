@@ -15,32 +15,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
 {
     public partial class MainForm : Form
     {
-
-        /*
-        string[][] allowedColors = new string[][]
-        {
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 28", "Color 80", "Color 90"}, //SOL
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 80", "Color 90"}, //KY
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //MAY
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //AXL
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //CHIPP
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //POTEMPKIN
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //FAUST
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //MILLIA
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //ZATO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //RAM
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 90" }, //LEO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90", "Color 99" }, //NAGO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //GIO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //ANJI
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 13", "Color 14", "Color 15", "Color 16", "Color 17", "Color 18", "Color 19", "Color 20", "Color 80", "Color 90", "Color 99"}, //INO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //GOLD
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 24", "Color 99"}, //JACKO
-            new string [] {"Color 1", "Color 2", "Color 3", "Color 4", "Color 5", "Color 6", "Color 7", "Color 8", "Color 9", "Color 10", "Color 11", "Color 12", "Color 90"}, //HAPPY
-        };
-        */
-
-
         [DllImport("kernel32.dll")]
         private static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 
@@ -57,11 +31,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xBED831";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
-        const string charPatternOffset = "GGST-Win64-Shipping.exe+0xBF66F3";
-        static byte[] charPattern = { 0xE8, 0x48, 0x58, 0xF8, 0xFF, 0x0F, 0xBE, 0x08, 0x89, 0x8F, 0x28, 0x04, 0x00, 0x00};
-
-        byte color = 0x59;
 
         static long psnCheckAddr = 0x0;
         static long spCheckAddr1 = 0x0;
@@ -97,7 +66,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
         static bool bOldState = false;
         static bool bPatched = false;
         static bool bIsPatching = false;
-        static bool bFirstPatch = true;
 
 
         public MainForm()
@@ -141,7 +109,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
                     {
                         bPatched = false;
                         bIsPatching = false;
-                        bFirstPatch = true;
                     }
                     if (!bPatched && !bIsPatching && bProcOpen) CreatePatch();
                 }
@@ -156,7 +123,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
                     bProcOpen = false;
                     bPatched = false;
                     bIsPatching = false;
-                    bFirstPatch = true;
                 }
             }
         }
@@ -232,7 +198,6 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
             if (!bFound1 || !bFound2 || !bFound3)
             {
-                bFirstPatch = false;
                 bIsPatching = false;
                 return;
             }
