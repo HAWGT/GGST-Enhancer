@@ -74,9 +74,9 @@ namespace GGST_COLOR_UNLOCKER_GUI
             this.lbl_status_text.AutoSize = true;
             this.lbl_status_text.Location = new System.Drawing.Point(12, 48);
             this.lbl_status_text.Name = "lbl_status_text";
-            this.lbl_status_text.Size = new System.Drawing.Size(50, 13);
+            this.lbl_status_text.Size = new System.Drawing.Size(53, 13);
             this.lbl_status_text.TabIndex = 2;
-            this.lbl_status_text.Text = "STATUS";
+            this.lbl_status_text.Text = "STATUS:";
             // 
             // btn_force
             // 
@@ -135,7 +135,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
             this.Controls.Add(this.lbl_pid_txt);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "GGST COLOR UNLOCKER 1.11";
+            this.Text = "GGST COLOR UNLOCKER 1.13";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.num_color)).EndInit();
             this.ResumeLayout(false);
