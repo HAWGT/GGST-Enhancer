@@ -23,13 +23,13 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         const string procName = "GGST-Win64-Shipping";
 
-        const string colorPSNPatternOffset = "GGST-Win64-Shipping.exe+0xE98969";
+        const string colorPSNPatternOffset = "GGST-Win64-Shipping.exe+0xE98A1E";
         static byte[] colorPSNPattern = { 0x74, 0x08, 0x48, 0x8B, 0xCF, 0xE8, 0x02, 0x05, 0x23, 0x00, 0x0F, 0xB6, 0xC3 };
 
-        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xC0D4C1";
+        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xC0D4F1";
         static byte[] colorSPPattern1 = { 0xE8, 0x4A, 0xCB, 0xF7, 0xFF, 0x48, 0x63, 0x8B, 0x28, 0x04, 0x00, 0x00, 0x0F, 0xBE, 0x44, 0x08, 0x03 };
 
-        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xC00B4E";
+        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xC00B7E";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x2C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
         static long psnCheckAddr = 0x0;
@@ -281,7 +281,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         private void btn_info_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is meant for game version 1.13\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
+            MessageBox.Show("This is meant for game version 1.14\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
         }
     }
 }

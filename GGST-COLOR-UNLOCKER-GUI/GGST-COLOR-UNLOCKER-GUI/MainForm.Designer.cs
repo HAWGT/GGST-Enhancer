@@ -135,7 +135,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
             this.Controls.Add(this.lbl_pid_txt);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "GGST COLOR UNLOCKER 1.13";
+            this.Text = "GGST COLOR UNLOCKER 1.14";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.num_color)).EndInit();
             this.ResumeLayout(false);
