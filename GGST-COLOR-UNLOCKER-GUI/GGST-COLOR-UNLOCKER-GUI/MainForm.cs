@@ -281,7 +281,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         private void btn_info_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is meant for game version 1.16\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
+            MessageBox.Show("This is meant for game version 1.17\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
         }
     }
 }
