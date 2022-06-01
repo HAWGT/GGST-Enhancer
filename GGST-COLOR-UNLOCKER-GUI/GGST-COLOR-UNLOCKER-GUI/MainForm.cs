@@ -1,15 +1,11 @@
-﻿using System;
+﻿using Memory;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
 using System.Diagnostics;
-using Memory;
+using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace GGST_COLOR_UNLOCKER_GUI
 {
@@ -32,9 +28,25 @@ namespace GGST_COLOR_UNLOCKER_GUI
         const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xC0A6CE";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x3C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+        const string incColorPatternOffset = "GGST-Win64-Shipping.exe+0xBFE83F";
+        static byte[] incColorPattern = { 0x74, 0xD9, 0x48, 0x8B, 0x4D, 0x30, 0x39, 0x71, 0x0C, 0x0F, 0x84 };
+
+        const string decColorPatternOffset = "GGST-Win64-Shipping.exe+0xBFE8E9";
+        static byte[] decColorPattern = { 0x74, 0xD9, 0x48, 0x8B, 0x4D, 0x30, 0x39, 0x71, 0x0C, 0x0F, 0x84 };
+
+        const string incCapColorPatternOffset = "GGST-Win64-Shipping.exe+0xBFE83F";
+        static byte[] incCapColorPattern = { 0x7E, 0x07, 0x89, 0x58, 0x0C, 0x48, 0x8B, 0x45, 0x30, 0x8B, 0x50, 0x0C, 0x8B, 0x48, 0x08, 0xE8 };
+
+        const string decCapColorPatternOffset = "GGST-Win64-Shipping.exe+0xBFE8CF";
+        static byte[] decCapColorPattern = { 0x7D, 0x0B, 0xC7, 0x40, 0x0C, 0x4F, 0x00, 0x00, 0x00, 0x48, 0x8B, 0x45, 0x30, 0x8B, 0x50, 0x0C, 0x8B, 0x48, 0x08, 0xE8 };
+
         static long psnCheckAddr = 0x0;
         static long spCheckAddr1 = 0x0;
         static long spCheckAddr2 = 0x0;
+        static long incCheckAddr = 0x0;
+        static long decCheckAddr = 0x0;
+        static long incCapCheckAddr = 0x0;
+        static long decCapCheckAddr = 0x0;
 
 
         static byte[] patchPSN = {
@@ -58,6 +70,35 @@ namespace GGST_COLOR_UNLOCKER_GUI
             0x74, 0x1B,                                                 //  je current+1B
             0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000042C],00000059 - Replacing mov [rdx+0000042C],00000000 - SP COLOR CHANGE CHARACTER
         };
+
+        static byte[] patchchange =
+        {
+            0x90,                           // nop
+            0x90,                           // nop
+            0x48, 0x8B, 0x4D, 0x30,         // mov rcx,[rbp+30]
+            0x39, 0x71, 0x0C,               // cmp[rcx + 0C],esi
+            0x0F, 0x84,                     // je 
+        };
+
+        static byte[] patchIncCap =
+        {
+            0xEB, 0x07,						// jmp GGST-Win64-Shipping.exe+BFE848
+            0x89, 0x58, 0x0C,				// mov [rax+0C],ebx
+            0x48, 0x8B, 0x45, 0x30,			// mov rax,[rbp+30]
+            0x8B, 0x50, 0x0C,				// mov edx,[rax + 0C]
+            0x8B, 0x48, 0x08,				// mov ecx,[rax + 08]
+            0xE8,							// call
+    };
+
+        static byte[] patchDecCap =
+        {
+            0xEB, 0x0B,									// jmp GGST-Win64-Shipping.exe+BFE8DC
+            0xC7, 0x40, 0x0C, 0x4F, 0x00, 0x00, 0x00,	// mov [rax+0C],0000004F
+            0x48, 0x8B, 0x45, 0x30,						// mov rax,[rbp+30]
+            0x8B, 0x50, 0x0C,							// mov edx,[rax + 0C]
+            0x8B, 0x48, 0x08,							// mov ecx,[rax + 08]
+            0xE8,										// call 
+    };
 
 
         static Mem m = new Mem();
@@ -133,10 +174,13 @@ namespace GGST_COLOR_UNLOCKER_GUI
             s.Start();
 
             bIsPatching = true;
-
             bool bFound1 = false;
             bool bFound2 = false;
             bool bFound3 = false;
+            bool bFound4 = false;
+            bool bFound5 = false;
+            bool bFound6 = false;
+            bool bFound7 = false;
 
             // PSN Color
             // Check if offset is correct
@@ -201,8 +245,80 @@ namespace GGST_COLOR_UNLOCKER_GUI
                     break;
                 }
             }
+            // Increase Color
+            // Check if offset is correct
+            if (BytesEqual(m.ReadBytes(incColorPatternOffset, incColorPattern.Length), incColorPattern))
+            {
+                incCheckAddr = (long)m.Get64BitCode(incColorPatternOffset);
+                bFound4 = true;
+            }
+            // Otherwise AOB Scan for bytes
+            else
+            {
+                IEnumerable<long> addresses4 = await m.AoBScan(BytesToString(incColorPattern), true, true);
+                foreach (long result in addresses4)
+                {
+                    incCheckAddr = result;
+                    bFound4 = true;
+                    break;
+                }
+            }
+            // Decrement Color
+            // Check if offset is correct
+            if (BytesEqual(m.ReadBytes(decColorPatternOffset, decColorPattern.Length), decColorPattern))
+            {
+                decCheckAddr = (long)m.Get64BitCode(decColorPatternOffset);
+                bFound5 = true;
+            }
+            // Otherwise AOB Scan for bytes
+            else
+            {
+                IEnumerable<long> addresses5 = await m.AoBScan(BytesToString(decColorPattern), true, true);
+                foreach (long result in addresses5)
+                {
+                    decCheckAddr = result;
+                    bFound5 = true;
+                    break;
+                }
+            }
+            // Increase Color Cap
+            // Check if offset is correct
+            if (BytesEqual(m.ReadBytes(incCapColorPatternOffset, incCapColorPattern.Length), incCapColorPattern))
+            {
+                incCapCheckAddr = (long)m.Get64BitCode(incCapColorPatternOffset);
+                bFound6 = true;
+            }
+            // Otherwise AOB Scan for bytes
+            else
+            {
+                IEnumerable<long> addresses6 = await m.AoBScan(BytesToString(incCapColorPattern), true, true);
+                foreach (long result in addresses6)
+                {
+                    incCapCheckAddr = result;
+                    bFound6 = true;
+                    break;
+                }
+            }
+            // Decrement Color
+            // Check if offset is correct
+            if (BytesEqual(m.ReadBytes(decCapColorPatternOffset, decCapColorPattern.Length), decCapColorPattern))
+            {
+                decCapCheckAddr = (long)m.Get64BitCode(decCapColorPatternOffset);
+                bFound7 = true;
+            }
+            // Otherwise AOB Scan for bytes
+            else
+            {
+                IEnumerable<long> addresses5 = await m.AoBScan(BytesToString(decCapColorPattern), true, true);
+                foreach (long result in addresses5)
+                {
+                    decCapCheckAddr = result;
+                    bFound7 = true;
+                    break;
+                }
+            }
 
-            if (!bFound1 || !bFound2 || !bFound3)
+            if (!bFound1 || !bFound2 || !bFound3 || !bFound4 || !bFound5 || !bFound6 || !bFound7)
             {
                 bIsPatching = false;
                 return;
@@ -211,6 +327,10 @@ namespace GGST_COLOR_UNLOCKER_GUI
             PatchAddr(m.mProc.Handle, psnCheckAddr, patchPSN);
             PatchAddr(m.mProc.Handle, spCheckAddr1, patchSP1);
             PatchAddr(m.mProc.Handle, spCheckAddr2, patchSP2);
+            PatchAddr(m.mProc.Handle, incCheckAddr, patchchange);
+            PatchAddr(m.mProc.Handle, decCheckAddr, patchchange);
+            PatchAddr(m.mProc.Handle, incCapCheckAddr, patchIncCap);
+            PatchAddr(m.mProc.Handle, decCapCheckAddr, patchDecCap);
 
             bPatched = true;
             bIsPatching = false;
