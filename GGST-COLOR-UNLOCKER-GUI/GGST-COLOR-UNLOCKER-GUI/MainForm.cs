@@ -23,30 +23,19 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         const string procName = "GGST-Win64-Shipping";
 
-        const string colorPSNPatternOffset = "GGST-Win64-Shipping.exe+0xEB233B";
-        static byte[] colorPSNPattern = { 0x74, 0x08, 0x48, 0x8B, 0xCF, 0xE8, 0x9B, 0x5E, 0x25, 0x00, 0x0F, 0xB6, 0xC3 };
+        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xC23693";
+        static byte[] colorSPPattern1 = { 0xE8, 0x18, 0x93, 0xF7, 0xFF, 0x48, 0x63, 0x8B, 0x38, 0x04, 0x00, 0x00, 0x0F, 0xBE, 0x44, 0x08, 0x03 };
 
-        const string colorSPPattern1Offset = "GGST-Win64-Shipping.exe+0xC22961";
-        static byte[] colorSPPattern1 = { 0xE8, 0x9A, 0x95, 0xF7, 0xFF, 0x48, 0x63, 0x8B, 0x38, 0x04, 0x00, 0x00, 0x0F, 0xBE, 0x44, 0x08, 0x03 };
-
-        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xC1532E";
+        const string colorSPPattern2Offset = "GGST-Win64-Shipping.exe+0xC1608E";
         static byte[] colorSPPattern2 = { 0x74, 0x24, 0x83, 0xBA, 0x3C, 0x04, 0x00, 0x00, 0x00, 0x74, 0x1B, 0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
         static long psnCheckAddr = 0x0;
         static long spCheckAddr1 = 0x0;
         static long spCheckAddr2 = 0x0;
 
-
-        static byte[] patchPSN = {
-            0x74, 0x08,                     //  je current+8
-            0x48, 0x8B, 0xCF,               //  mov rcx,rdi
-            0xE8, 0x9B, 0x5E, 0x25, 0x00,   //  call func
-            0x90, 0x90, 0x90,               //  NOP NOP NOP - Replacing movzx eax,bl - PSN COLOR CHECK
-        };
-
         static byte[] patchSP1 =
         {
-            0xE8, 0x9A, 0x95, 0xF7, 0xFF,               //  call func
+            0xE8, 0x18, 0x93, 0xF7, 0xFF,               //  call func
             0x48, 0x63, 0x8B, 0x38, 0x04, 0x00, 0x00,   //  movsxd  rcx,dword ptr [rbx+00000438]
             0xB8, 0x59, 0x00, 0x00, 0x00,               //  mov eax,59 - Replacing movsx eax,byte ptr [rax+rcx+03] - SP COLOR OPEN SELECT
         };
@@ -54,9 +43,9 @@ namespace GGST_COLOR_UNLOCKER_GUI
         static byte[] patchSP2 =
         {
             0x74, 0x24,                                                 //  je current+24
-            0x83, 0xBA, 0x3C, 0x04, 0x00, 0x00, 0x00,                   //  cmp cmp dword ptr [rdx+0000042C],00
+            0x83, 0xBA, 0x3C, 0x04, 0x00, 0x00, 0x00,                   //  cmp cmp dword ptr [rdx+0000043C],00
             0x74, 0x1B,                                                 //  je current+1B
-            0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000042C],00000059 - Replacing mov [rdx+0000042C],00000000 - SP COLOR CHANGE CHARACTER
+            0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00  //  mov [rdx+0000043C],00000059 - Replacing mov [rdx+0000042C],00000000 - SP COLOR CHANGE CHARACTER
         };
 
 
@@ -136,36 +125,13 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
             bool bFound1 = false;
             bool bFound2 = false;
-            bool bFound3 = false;
-
-            // PSN Color
-            // Check if offset is correct
-
-            if (BytesEqual(m.ReadBytes(colorPSNPatternOffset, colorPSNPattern.Length), colorPSNPattern))
-            {
-                psnCheckAddr = (long)m.Get64BitCode(colorPSNPatternOffset);
-                bFound1 = true;
-                //MessageBox.Show("Found PSN");
-            }
-            // Otherwise AOB Scan for bytes
-            else
-            {
-                IEnumerable<long> addresses1 = await m.AoBScan(BytesToString(colorPSNPattern), true, true);
-                foreach (long result in addresses1)
-                {
-                    psnCheckAddr = result;
-                    bFound1 = true;
-                    //MessageBox.Show("Found PSN");
-                    break;
-                }
-            }
 
             // Special Color 1
             // Check if offset is correct
             if (BytesEqual(m.ReadBytes(colorSPPattern1Offset, colorSPPattern1.Length), colorSPPattern1))
             {
                 spCheckAddr1 = (long)m.Get64BitCode(colorSPPattern1Offset);
-                bFound2 = true;
+                bFound1 = true;
                 //MessageBox.Show("Found SP1");
             }
             // Otherwise AOB Scan for bytes
@@ -175,7 +141,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
                 foreach (long result in addresses2)
                 {
                     spCheckAddr1 = result;
-                    bFound2 = true;
+                    bFound1 = true;
                     //MessageBox.Show("Found SP1");
                     break;
                 }
@@ -186,7 +152,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
             if (BytesEqual(m.ReadBytes(colorSPPattern2Offset, colorSPPattern2.Length), colorSPPattern2))
             {
                 spCheckAddr2 = (long)m.Get64BitCode(colorSPPattern2Offset);
-                bFound3 = true;
+                bFound2 = true;
                 //MessageBox.Show("Found SP2");
             }
             // Otherwise AOB Scan for bytes
@@ -196,19 +162,17 @@ namespace GGST_COLOR_UNLOCKER_GUI
                 foreach (long result in addresses3)
                 {
                     spCheckAddr2 = result;
-                    bFound3 = true;
+                    bFound2 = true;
                     //MessageBox.Show("Found SP2");
                     break;
                 }
             }
 
-            if (!bFound1 || !bFound2 || !bFound3)
+            if (!bFound1 || !bFound2)
             {
                 bIsPatching = false;
                 return;
             }
-
-            PatchAddr(m.mProc.Handle, psnCheckAddr, patchPSN);
             PatchAddr(m.mProc.Handle, spCheckAddr1, patchSP1);
             PatchAddr(m.mProc.Handle, spCheckAddr2, patchSP2);
 
@@ -259,7 +223,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
             {
                 byte[] patchSP1 =
                 {
-                    0xE8, 0x9A, 0x95, 0xF7, 0xFF,
+                    0xE8, 0x18, 0x93, 0xF7, 0xFF,
                     0x48, 0x63, 0x8B, 0x38, 0x04, 0x00, 0x00,
                     0xB8, (byte)num_color.Value, 0x00, 0x00, 0x00,
                 };
@@ -281,7 +245,7 @@ namespace GGST_COLOR_UNLOCKER_GUI
 
         private void btn_info_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is meant for game version 1.21\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
+            MessageBox.Show("This is meant for game version 1.27\nWhen choosing a color, you subtract 1 to get the correct color ingame.");
         }
     }
 }
