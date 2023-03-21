@@ -51,7 +51,6 @@ bool ImproveFishing()
 
 	BYTE PatchDecreaseMoney[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 	Patch(PatchDecreaseMoney, DecreaseMoney, 7);
-	
 
 	return true;
 }
