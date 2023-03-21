@@ -1,5 +1,5 @@
 # GGST-Enhancer
-GGST COLOR UNLOCKER
+GGST ENHANCER
 
 Unlocks Any Color (SP is Online only)
 
