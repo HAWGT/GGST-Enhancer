@@ -23,7 +23,7 @@ bool UncensorMuseum()
 	BYTE* MuseumFigureNSFWFlagSetter = PatternScan("0F B6 43 61 48 8B 5C 24 30");
 	if (!MuseumFigureNSFWFlagSetter) return false;
 
-	BYTE MuseumFigureNSFWFlagSetterPatch[] = { 0x30, 0xC0, 0x90, 0x90 };
+	BYTE MuseumFigureNSFWFlagSetterPatch[] = { 0x30, 0xC0, 0x90, 0x90 }; //xor al, al (nop nop)
 	Patch(MuseumFigureNSFWFlagSetterPatch, MuseumFigureNSFWFlagSetter, 4);
 
 	return true;
