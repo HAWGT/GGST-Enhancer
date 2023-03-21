@@ -1,7 +1,7 @@
 # GGST-Enhancer
 GGST ENHANCER
 
-Unlocks Any Color (SP is Online only)
+Unlocks Any Color
 
 Improved Fishing (no duplicates!)
 
