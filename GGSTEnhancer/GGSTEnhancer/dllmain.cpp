@@ -4,7 +4,7 @@
 
 void PatchAll()
 {
-    while (!PatchOnlineMultiplayerColorSelect()) {};
+    while (!PatchIsSelectableCharaColorID()) {};
     while (!UncensorMuseum()) {};
     while (!PatchIsUnlocked()) {};
     while (!ImproveFishing()) {};

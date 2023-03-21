@@ -1,19 +1,40 @@
 #include "Features.h"
 #include "Helpers.h"
 
-bool PatchOnlineMultiplayerColorSelect()
+bool PatchIsSelectableCharaColorID()
 {
-	BYTE* ColorSetInitWidget = PatternScan("0F BE 44 08 03 89 83 3C 04 00 00 E8 ? ? ? ? 0F BE 88 83 00 00 00 89 8B 44 04 00 00 E8 ? ? ? ? 0F B7 88 84 00 00 00");
-	if (!ColorSetInitWidget) return false;
+	BYTE* SelectionLimitIncrement = PatternScan("83 78 0C 4F 7E ? 89 58 0C");
+	if (!SelectionLimitIncrement) return false;
 
-	BYTE* ColorSetSelectCharacter = PatternScan("C7 82 3C 04 00 00 ? ? ? ? 33 D2");
-	if (!ColorSetSelectCharacter) return false;
+	BYTE* SelectionLimitDecrement = PatternScan("C7 40 0C 4F ? ? ? 48 8B 45 30");
+	if (!SelectionLimitIncrement) return false;
 
-	BYTE PatchColorSetInitWidget[] = { 0xB8, 0x59, 0x00, 0x00, 0x00 }; //mov eax, 59h
-	Patch(PatchColorSetInitWidget, ColorSetInitWidget, 5);
+	BYTE* MiniSelectionLimitDecrement = PatternScan("C7 83 3C 04 00 00 4F ? ? ? BA ? ? ? ? EB");
+	if (!MiniSelectionLimitDecrement) return false;
 
-	BYTE PatchColorSetSelectCharacter[] = { 0xC7, 0x82, 0x3C, 0x04, 0x00, 0x00, 0x59, 0x00, 0x00, 0x00 }; //mov [rdx+0000043C],00000059h
-	Patch(PatchColorSetSelectCharacter, ColorSetSelectCharacter, 10);
+	BYTE* MiniSelectionLimitIncrement = PatternScan("83 FA 4F 7E ? 89 B3 3C 04 00 00");
+	if (!MiniSelectionLimitIncrement) return false;
+
+	BYTE* Orig_IsSelectableCharaColorID = PatternScan("48 89 5C 24 08 48 89 74 24 10 55 57 41 54 41 56 41 57 48 8B EC 48 83 EC ? 33 DB");
+	if (!Orig_IsSelectableCharaColorID) return false;
+
+	BYTE SelectionLimitIncrementPatch[] = { 0x83, 0x78, 0x0C, 0x62 }; //cmp dword ptr [rax+0Ch], 62h
+	Patch(SelectionLimitIncrementPatch, SelectionLimitIncrement, sizeof(SelectionLimitIncrementPatch));
+
+	BYTE SelectionLimitDecrementPatch[] = { 0xC7, 0x40, 0x0C, 0x62, 0x00, 0x00, 0x00 }; //mov dword ptr [rax+0Ch], 62h
+	Patch(SelectionLimitDecrementPatch, SelectionLimitDecrement, sizeof(SelectionLimitDecrementPatch));
+
+	BYTE MiniSelectionLimitDecrementPatch[] =
+	{
+		0xC7, 0x83, 0x3C, 0x04, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, //mov dword ptr [rbx+43Ch], 62h
+		0xBA, 0x62, 0x00, 0x00, 0x00								//mov edx, 62h
+	};
+	Patch(MiniSelectionLimitDecrementPatch, MiniSelectionLimitDecrement, sizeof(MiniSelectionLimitDecrementPatch));
+
+	BYTE MiniSelectionLimitIncrementPatch[] = { 0x83, 0xFA, 0x62 }; //cmp edx, 62h
+	Patch(MiniSelectionLimitIncrementPatch, MiniSelectionLimitIncrement, sizeof(MiniSelectionLimitIncrementPatch));
+
+	Detour64(Orig_IsSelectableCharaColorID, (BYTE*)&hk_IsUnlocked, 12);
 
 	return true;
 }
@@ -24,7 +45,7 @@ bool UncensorMuseum()
 	if (!MuseumFigureNSFWFlagSetter) return false;
 
 	BYTE MuseumFigureNSFWFlagSetterPatch[] = { 0x30, 0xC0, 0x90, 0x90 }; //xor al, al (nop nop)
-	Patch(MuseumFigureNSFWFlagSetterPatch, MuseumFigureNSFWFlagSetter, 4);
+	Patch(MuseumFigureNSFWFlagSetterPatch, MuseumFigureNSFWFlagSetter, sizeof(MuseumFigureNSFWFlagSetterPatch));
 
 	return true;
 }
@@ -43,19 +64,25 @@ bool ImproveFishing()
 {
 	BYTE* HasRareFish = PatternScan("45 85 F6 75 ? 80 FA 0A");
 	if (!HasRareFish) return false;
+
 	BYTE* DecreaseMoney = PatternScan("44 89 81 24 35 03 00");
 	if (!DecreaseMoney) return false;
 
-	BYTE PatchHasRareFish[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-	Patch(PatchHasRareFish, HasRareFish, 10);
+	BYTE HasRareFishPatch[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+	Patch(HasRareFishPatch, HasRareFish, sizeof(HasRareFishPatch));
 
-	BYTE PatchDecreaseMoney[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-	Patch(PatchDecreaseMoney, DecreaseMoney, 7);
+	BYTE DecreaseMoneyPatch[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+	Patch(DecreaseMoneyPatch, DecreaseMoney, sizeof(DecreaseMoneyPatch));
 
 	return true;
 }
 
-__int64 __fastcall hk_IsUnlocked(__int64 a1)
+char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)
+{
+	return (colorID >= 0 && colorID < 99);
+}
+
+__int64 __fastcall hk_IsUnlocked(__int64 pDLCName)
 {
 	return 1;
 }
