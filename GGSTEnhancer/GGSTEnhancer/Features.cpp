@@ -1,6 +1,5 @@
 #include "Features.h"
 #include "Helpers.h"
-#include <iostream>
 
 bool PatchOnlineMultiplayerColorSelect()
 {
