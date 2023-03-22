@@ -7,6 +7,8 @@ Improved Fishing (no duplicates!)
 
 No censorship in the Museum!
 
+DLC Unlocker
+
 
 Instructions:
 
