@@ -3,7 +3,7 @@ GGST ENHANCER
 
 Unlocks Any Color
 
-Improved Fishing (no duplicates!)
+Improved Fishing (no duplicates)
 
 No censorship in the Museum!
 
