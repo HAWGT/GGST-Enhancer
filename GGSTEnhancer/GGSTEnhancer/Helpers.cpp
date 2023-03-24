@@ -80,7 +80,7 @@ BYTE* TrampHook64(BYTE* src, BYTE* dst, const ULONG64 size)
 	//mov rax, ULONG64
 	*(BYTE*)(gateway + size) = 0x48;
 	*(BYTE*)(gateway + size + 1) = 0xB8;
-	*(ULONG64*)((ULONG64)gateway + size + 2) = (ULONG64)src + 12;
+	*(ULONG64*)((ULONG64)gateway + size + 2) = (ULONG64)src + size;
 	//jmp rax
 	*(BYTE*)(gateway + size + 10) = 0xFF;
 	*(BYTE*)(gateway + size + 11) = 0xE0;
