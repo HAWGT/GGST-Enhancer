@@ -1,6 +1,5 @@
 #include "Features.h"
 #include "Helpers.h"
-#include "Constants.h"
 
 bool UnlockColorSelection()
 {
@@ -99,8 +98,6 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 	__int64 BasicData = *(__int64*)((BYTE*)UREDPlayerData + 0x128);
 
 	if (!BasicData) return 0;
-
-	memcpy_s(SteamID, 16, (char*)(UREDPlayerData + 0x140), 16);
 
 	Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAura);
 	Orig_SetRewardNameAura(UREDPlayerData, SelectedRewardAura);

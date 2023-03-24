@@ -1,11 +1,12 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "Features.h"
-#include "Constants.h"
 
 #include <Windows.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+inline const char ConfigFileName[] = ".\\RED\\Binaries\\Win64\\GGSTEnhancer.ini";
 
 void PatchAll()
 {

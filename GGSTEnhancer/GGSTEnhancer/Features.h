@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Constants.h"
-
 bool UnlockColorSelection();
 bool UncensorMuseum();
 bool ImproveFishing();
@@ -10,8 +8,6 @@ bool UnlockAura();
 inline bool GetRewards = false;
 inline unsigned int SelectedRewardAura = 0;
 inline bool GetRewardBadges = false;
-
-inline char* SteamID[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 typedef void(__fastcall* SetRewardAvatarAura_t)(__int64 UREDPlayerData, int itemID);
 inline SetRewardAvatarAura_t Orig_SetRewardAvatarAura;
