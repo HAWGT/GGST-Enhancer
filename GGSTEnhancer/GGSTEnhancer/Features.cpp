@@ -95,10 +95,6 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 {
-	__int64 BasicData = *(__int64*)((BYTE*)UREDPlayerData + 0x128);
-
-	if (!BasicData) return 0;
-
 	Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAura);
 	Orig_SetRewardNameAura(UREDPlayerData, SelectedRewardAura);
 	
