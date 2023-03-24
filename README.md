@@ -7,8 +7,14 @@ Improved Fishing (no duplicates)
 
 No censorship in the Museum!
 
-Reward Unlocker
+Reward Unlocker (Auras)
 
 Instructions:
 
-Rename the built dll into UMPDC.dll and place it inside your "GGST-Win64-Shipping.exe" folder
+1. Place UMPDC.dll inside your "GGST-Win64-Shipping.exe" folder
+
+2. Open the game
+
+Optional:
+
+Edit GGSTEnhancer.ini for custom settings
