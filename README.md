@@ -1,14 +1,11 @@
 # GGST-Enhancer
 GGST ENHANCER
 
-Unlocks Any Color
+Unlocks SP colors, etc...
 
 Improved Fishing (no duplicates)
 
 No censorship in the Museum!
-
-DLC Unlocker
-
 
 Instructions:
 
