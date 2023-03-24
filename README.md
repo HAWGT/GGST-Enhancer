@@ -17,4 +17,4 @@ Instructions:
 
 Optional:
 
-Edit GGSTEnhancer.ini for custom settings
+Edit GGSTEnhancer.ini for custom settings (it is created when opening the game for the first time)
