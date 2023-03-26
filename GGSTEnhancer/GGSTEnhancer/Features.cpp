@@ -69,7 +69,6 @@ bool ImproveFishing()
 
 bool UnlockAura()
 {
-
 	BYTE* Orig_CheckRewardAura = PatternScan("48 89 5C 24 20 55 56 57 48 83 EC ? 48 8B D9 48 8D 4C 24 40");
 	if (!Orig_CheckRewardAura) return false;
 
