@@ -89,7 +89,19 @@ bool UnlockAura()
 
 char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)
 {
-	return (colorID >= 0 && colorID < 99);
+	if (bUnlockNonexistentColors)
+	{
+		return (colorID >= 0 && colorID < 99);
+	}
+	else {
+		return	(colorID >= 0 && colorID < 12) || colorID == 89 ||										// Universal Colors
+				(charaID == 0 && colorID == 27) ||														// Color 28 for Sol
+				((charaID == 7 || charaID == 8 || charaID == 9 || charaID == 10) && colorID == 23) ||	// Test Color for Millia, Zato, Ramlethal and Leo
+				(charaID == 18 && colorID == 69) ||														// Color 70 for Baiken
+				((charaID == 0 || charaID == 1 || charaID == 14 || charaID == 18) && colorID == 79) ||	// EX Color for Sol, Ky, I-No and Baiken
+				((charaID == 11 || charaID == 14 || charaID == 16) && colorID == 98)					// Story Color for Nagoriyuki, I-No and Jack-O
+		;
+	}
 }
 
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
@@ -97,7 +109,7 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 	Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAura);
 	Orig_SetRewardNameAura(UREDPlayerData, SelectedRewardAura);
 	
-	if (GetRewardBadges)
+	if (bGetRewardBadges)
 	{
 		Orig_SetRewardBadge(UREDPlayerData, 3009, 1); //Times in top badge
 		Orig_SetRewardBadge(UREDPlayerData, 503009, 1); //Wins badge

@@ -5,9 +5,10 @@ bool UncensorMuseum();
 bool ImproveFishing();
 bool UnlockAura();
 
-inline bool GetRewards = false;
+inline bool bGetRewards = false;
 inline unsigned int SelectedRewardAura = 0;
-inline bool GetRewardBadges = false;
+inline bool bGetRewardBadges = false;
+inline bool bUnlockNonexistentColors = false;
 
 typedef void(__fastcall* SetRewardAvatarAura_t)(__int64 UREDPlayerData, int itemID);
 inline SetRewardAvatarAura_t Orig_SetRewardAvatarAura;

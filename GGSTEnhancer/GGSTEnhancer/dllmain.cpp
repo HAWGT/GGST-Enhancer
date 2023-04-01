@@ -40,10 +40,15 @@ void PatchAll()
 				std::cout << "[+] Settings Loaded: " << std::endl;
 				std::cout << param << " " << value << std::endl;
 			}
+			if (!param.compare("UnlockNonexistentColors"))
+			{
+				bUnlockNonexistentColors = value == 1;
+				std::cout << param << " " << bUnlockNonexistentColors << std::endl;
+			}
 			if (!param.compare("GetRewards"))
 			{
-				GetRewards = value == 1;
-				std::cout << param << " " << GetRewards << std::endl;
+				bGetRewards = value == 1;
+				std::cout << param << " " << bGetRewards << std::endl;
 			}
 			if (!param.compare("RewardAura"))
 			{
@@ -52,8 +57,8 @@ void PatchAll()
 			}
 			if (!param.compare("GetRewardBadges"))
 			{
-				GetRewardBadges = value == 1;
-				std::cout << param << " " << GetRewardBadges << std::endl;
+				bGetRewardBadges = value == 1;
+				std::cout << param << " " << bGetRewardBadges << std::endl;
 			}
 		}
 
@@ -66,6 +71,7 @@ void PatchAll()
 		ConfigFile.open(ConfigFileName, std::ofstream::out | std::ofstream::trunc);
 
 		ConfigFile << "Console 0" << std::endl;
+		ConfigFile << "UnlockNonexistentColors 0" << std::endl;
 		ConfigFile << "GetRewards 0" << std::endl;
 		ConfigFile << "RewardAura 0" << std::endl;
 		ConfigFile << "GetRewardBadges 0" << std::endl;
@@ -85,7 +91,7 @@ void PatchAll()
 	while (!ImproveFishing()) {};
 	std::cout << "[+] Success!" << std::endl;
 
-	if (GetRewards)
+	if (bGetRewards)
 	{
 		std::cout << "[+] Unlocking Aura" << std::endl;
 		while (!UnlockAura()) {};
