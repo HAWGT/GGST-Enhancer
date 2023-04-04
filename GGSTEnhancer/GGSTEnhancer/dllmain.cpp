@@ -10,8 +10,6 @@ inline const char ConfigFileName[] = ".\\RED\\Binaries\\Win64\\GGSTEnhancer.ini"
 
 void PatchAll()
 {
-	SelectedRewardAura = 3;
-
 	std::ifstream in(ConfigFileName);
 
 	auto CreateConsole = [](const char* name) {
