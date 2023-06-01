@@ -76,12 +76,13 @@ bool ImproveFishing()
 	return true;
 }
 
-bool UnlockAura()
+bool UnlockRewards()
 {
 	BYTE* Orig_CheckRewardAura = PatternScan("48 89 5C 24 20 55 56 57 48 83 EC ? 48 8B D9 48 8D 4C 24 40");
 	if (!Orig_CheckRewardAura) return false;
 
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
+
 	//Case 2:
 	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(PatternScan("48 89 5C 24 10 57 48 83 EC ? 8B FA 48 8B D9 85 D2 0F 8E ? ? ? ? 48 8D 4C 24 40 48 89 74 24 30 E8 ? ? ? ? 48 8D 4C 24 40 E8 ? ? ? ? 8B F0 48 8D 4C 24 40 C1 E6 ? E8 ? ? ? ? 0B F0 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C7 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C6 48 8B 10 E8 ? ? ? ? 48 8B 74 24 30 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 8B 81 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 89 5C 24 08 44 89 44 24 18"));
 	if (!Orig_SetRewardAvatarAura) return false;;
@@ -94,6 +95,9 @@ bool UnlockAura()
 	Orig_SetRewardBadge = reinterpret_cast<SetRewardBadge_t>(PatternScan("48 89 5C 24 08 44 89 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 4C 8B E9"));
 	if (!Orig_SetRewardBadge) return false;
 
+	Orig_UpdateOnlineCheatPt = reinterpret_cast<UpdateOnlineCheatPt_t>(PatternScan("48 89 5C 24 18 57 48 83 EC ? 48 83 B9 28 01 00 00 ?"));
+	if (!Orig_UpdateOnlineCheatPt) return false;
+
 	Detour64(Orig_CheckRewardAura, (BYTE*)hk_CheckRewardAura, 12);
 
 	return true;
@@ -101,27 +105,24 @@ bool UnlockAura()
 
 char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)
 {
-	if (bUnlockNonexistentColors)
-	{
-		return (colorID >= COLORMIN && colorID < COLORMAX);
-	}
-	else 
-	{
-		return	(colorID >= COLORMIN && colorID < COLORLIMIT) || colorID == SPCOLOR ||
-				(charaID == SOL && colorID == BETACOLOR) ||
-				((charaID == MILLIA || charaID == ZATO || charaID == RAM || charaID == LEO) && colorID == TESTCOLOR) ||
-				(charaID == BAIKEN && colorID == ALTCOLOR) ||
-				((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
-				((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR)
+	return	(colorID >= COLORMIN && colorID < COLORLIMIT) || colorID == SPCOLOR ||
+		(charaID == SOL && colorID == BETACOLOR) ||
+		((charaID == MILLIA || charaID == ZATO || charaID == RAM || charaID == LEO) && colorID == TESTCOLOR) ||
+		(charaID == BAIKEN && colorID == ALTCOLOR) ||
+		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
+		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR)
 		;
-	}
 }
 
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 {
-	Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAura);
-	Orig_SetRewardNameAura(UREDPlayerData, SelectedRewardAura);
-	
+
+	if (bGetRewardAuras)
+	{
+		Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAvatarAura);
+		Orig_SetRewardNameAura(UREDPlayerData, SelectedRewardNameAura);
+	}
+
 	if (bGetRewardBadges)
 	{
 		for (int badgeID : BADGES)
@@ -130,5 +131,22 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 		}
 	}
 
+	if (bAntiRQFlag)
+	{
+		//Min: -10, Max: 50, Negative Step: 8, Positive Step: 9, 9 * 6 = 54
+		for (int i = 0; i < 7; i++)
+		{
+			Orig_UpdateOnlineCheatPt(UREDPlayerData, 1);
+		}
+
+		//Neutralize this function
+		Detour64((BYTE*)Orig_UpdateOnlineCheatPt, (BYTE*)hk_UpdateOnlineCheatPt, 12);
+	}
+
 	return 0;
+}
+
+void __fastcall hk_UpdateOnlineCheatPt(__int64 UREDPlayerData, char isMatchEnd)
+{
+	//This function is called 61 times on match end (Park)
 }

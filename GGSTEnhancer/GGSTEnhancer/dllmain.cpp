@@ -38,25 +38,30 @@ void PatchAll()
 				std::cout << "[+] Settings Loaded: " << std::endl;
 				std::cout << param << " " << value << std::endl;
 			}
-			if (!param.compare("UnlockNonexistentColors"))
+			if (!param.compare("GetRewardAuras"))
 			{
-				bUnlockNonexistentColors = value == 1;
-				std::cout << param << " " << bUnlockNonexistentColors << std::endl;
+				bGetRewardAuras = value == 1;
+				std::cout << param << " " << bGetRewardAuras << std::endl;
 			}
-			if (!param.compare("GetRewards"))
+			if (!param.compare("RewardAvatarAura"))
 			{
-				bGetRewards = value == 1;
-				std::cout << param << " " << bGetRewards << std::endl;
+				SelectedRewardAvatarAura = (value >= 0 && value <= 3) ? value : 0;
+				std::cout << param << " " << SelectedRewardAvatarAura << std::endl;
 			}
-			if (!param.compare("RewardAura"))
+			if (!param.compare("RewardNameAura"))
 			{
-				SelectedRewardAura = (value >= 0 && value <= 3) ? value : 0;
-				std::cout << param << " " << SelectedRewardAura << std::endl;
+				SelectedRewardNameAura = (value >= 0 && value <= 3) ? value : 0;
+				std::cout << param << " " << SelectedRewardNameAura << std::endl;
 			}
 			if (!param.compare("GetRewardBadges"))
 			{
 				bGetRewardBadges = value == 1;
 				std::cout << param << " " << bGetRewardBadges << std::endl;
+			}
+			if (!param.compare("AntiRQFlag"))
+			{
+				bAntiRQFlag = value == 1;
+				std::cout << param << " " << bAntiRQFlag << std::endl;
 			}
 		}
 
@@ -69,10 +74,11 @@ void PatchAll()
 		ConfigFile.open(ConfigFileName, std::ofstream::out | std::ofstream::trunc);
 
 		ConfigFile << "Console 0" << std::endl;
-		ConfigFile << "UnlockNonexistentColors 0" << std::endl;
-		ConfigFile << "GetRewards 0" << std::endl;
-		ConfigFile << "RewardAura 0" << std::endl;
+		ConfigFile << "GetRewardAuras 0" << std::endl;
+		ConfigFile << "RewardAvatarAura 0" << std::endl;
+		ConfigFile << "RewardNameAura 0" << std::endl;
 		ConfigFile << "GetRewardBadges 0" << std::endl;
+		ConfigFile << "AntiRQFlag 0" << std::endl;
 
 		ConfigFile.close();
 	}
@@ -89,12 +95,9 @@ void PatchAll()
 	while (!ImproveFishing()) {};
 	std::cout << "[+] Success!" << std::endl;
 
-	if (bGetRewards)
-	{
-		std::cout << "[+] Unlocking Aura" << std::endl;
-		while (!UnlockAura()) {};
-		std::cout << "[+] Success!" << std::endl;
-	}
+	std::cout << "[+] Unlocking Rewards" << std::endl;
+	while (!UnlockRewards()) {};
+	std::cout << "[+] Success!" << std::endl;
 
 	std::cout << "[+] Done!" << std::endl;
 
