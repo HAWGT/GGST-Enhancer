@@ -64,14 +64,13 @@ bool ImproveFishing()
 	BYTE* HasRareFish = PatternScan("45 85 F6 75 ? 80 FA 0A");
 	if (!HasRareFish) return false;
 
-	BYTE* DecreaseMoney = PatternScan("44 89 81 24 35 03 00");
-	if (!DecreaseMoney) return false;
-
 	BYTE HasRareFishPatch[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 	Patch(HasRareFishPatch, HasRareFish, sizeof(HasRareFishPatch));
 
-	BYTE DecreaseMoneyPatch[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-	Patch(DecreaseMoneyPatch, DecreaseMoney, sizeof(DecreaseMoneyPatch));
+	Orig_AddInGameCash = reinterpret_cast<AddInGameCash_t>(PatternScan("40 53 48 83 EC ? 48 63 81 24 35 03 00"));
+	if (!Orig_AddInGameCash) return false;
+	Orig_AddInGameCash = reinterpret_cast<AddInGameCash_t>(TrampHook64((BYTE*)Orig_AddInGameCash, (BYTE*)hk_AddInGameCash, 19)); //No need for this many bytes, but it makes it easier to visualize and debug
+	if (!Orig_AddInGameCash) return false;
 
 	return true;
 }
@@ -101,6 +100,12 @@ bool UnlockRewards()
 	Detour64(Orig_CheckRewardAura, (BYTE*)hk_CheckRewardAura, 12);
 
 	return true;
+}
+
+void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
+{
+	if (add < 0) add = 0;
+	Orig_AddInGameCash(CSaveDataManager, add);
 }
 
 char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)

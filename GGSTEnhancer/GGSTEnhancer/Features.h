@@ -11,6 +11,10 @@ inline unsigned int SelectedRewardNameAura = 0;
 inline bool bGetRewardBadges = false;
 inline bool bAntiRQFlag = false;
 
+typedef void(__fastcall* AddInGameCash_t)(__int64 CSaveDataManager, int add);
+inline AddInGameCash_t Orig_AddInGameCash;
+void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add);
+
 typedef void(__fastcall* SetRewardAvatarAura_t)(__int64 UREDPlayerData, int itemID);
 inline SetRewardAvatarAura_t Orig_SetRewardAvatarAura;
 
@@ -22,7 +26,6 @@ inline SetRewardBadge_t Orig_SetRewardBadge;
 
 char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID);
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData);
-
 
 typedef void(__fastcall* UpdateOnlineCheatPt_t)(__int64, char);
 inline UpdateOnlineCheatPt_t Orig_UpdateOnlineCheatPt;
