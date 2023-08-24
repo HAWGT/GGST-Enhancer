@@ -83,10 +83,6 @@ void PatchAll()
 		ConfigFile.close();
 	}
 
-	std::cout << "[+] Unlocking Color Selection" << std::endl;
-	while (!UnlockColorSelection()) {};
-	std::cout << "[+] Success!" << std::endl;
-
 	std::cout << "[+] Uncensoring Museum" << std::endl;
 	while (!UncensorMuseum()) {};
 	std::cout << "[+] Success!" << std::endl;

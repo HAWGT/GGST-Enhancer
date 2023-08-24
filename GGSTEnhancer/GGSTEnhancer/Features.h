@@ -1,6 +1,5 @@
 #pragma once
 
-bool UnlockColorSelection();
 bool UncensorMuseum();
 bool ImproveFishing();
 bool UnlockRewards();
@@ -24,7 +23,6 @@ inline SetRewardNameAura_t Orig_SetRewardNameAura;
 typedef __int64(__fastcall* SetRewardBadge_t)(__int64 UREDPlayerData, __int64 badgeID, unsigned int add);
 inline SetRewardBadge_t Orig_SetRewardBadge;
 
-char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID);
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData);
 
 typedef void(__fastcall* UpdateOnlineCheatPt_t)(__int64, char);

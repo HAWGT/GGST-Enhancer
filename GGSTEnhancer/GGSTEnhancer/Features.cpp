@@ -1,47 +1,6 @@
 #include "Features.h"
 #include "Helpers.h"
-#include "Characters.h"
-#include "Colors.h"
 #include "Badges.h"
-
-bool UnlockColorSelection()
-{
-	BYTE* SelectionLimitIncrement = PatternScan("83 78 0C 4F 7E ? 89 58 0C");
-	if (!SelectionLimitIncrement) return false;
-
-	BYTE* SelectionLimitDecrement = PatternScan("C7 40 0C 4F ? ? ? 48 8B 45 30");
-	if (!SelectionLimitIncrement) return false;
-
-	BYTE* MiniSelectionLimitDecrement = PatternScan("C7 83 3C 04 00 00 4F ? ? ? BA ? ? ? ? EB");
-	if (!MiniSelectionLimitDecrement) return false;
-
-	BYTE* MiniSelectionLimitIncrement = PatternScan("83 FA 4F 7E ? 89 B3 3C 04 00 00");
-	if (!MiniSelectionLimitIncrement) return false;
-
-	BYTE* Orig_IsSelectableCharaColorID = PatternScan("48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 20 55 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 45 33 ED 8B DA");
-	if (!Orig_IsSelectableCharaColorID) return false;
-
-
-	BYTE SelectionLimitIncrementPatch[] = { 0x83, 0x78, 0x0C, 0x62 }; //cmp dword ptr [rax+0Ch], 62h
-	Patch(SelectionLimitIncrementPatch, SelectionLimitIncrement, sizeof(SelectionLimitIncrementPatch));
-
-	BYTE SelectionLimitDecrementPatch[] = { 0xC7, 0x40, 0x0C, 0x62, 0x00, 0x00, 0x00 }; //mov dword ptr [rax+0Ch], 62h
-	Patch(SelectionLimitDecrementPatch, SelectionLimitDecrement, sizeof(SelectionLimitDecrementPatch));
-
-	BYTE MiniSelectionLimitDecrementPatch[] =
-	{
-		0xC7, 0x83, 0x3C, 0x04, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00, //mov dword ptr [rbx+43Ch], 62h
-		0xBA, 0x62, 0x00, 0x00, 0x00								//mov edx, 62h
-	};
-	Patch(MiniSelectionLimitDecrementPatch, MiniSelectionLimitDecrement, sizeof(MiniSelectionLimitDecrementPatch));
-
-	BYTE MiniSelectionLimitIncrementPatch[] = { 0x83, 0xFA, 0x62 }; //cmp edx, 62h
-	Patch(MiniSelectionLimitIncrementPatch, MiniSelectionLimitIncrement, sizeof(MiniSelectionLimitIncrementPatch));
-
-	Detour64(Orig_IsSelectableCharaColorID, (BYTE*)hk_IsSelectableCharaColorID, 12);
-
-	return true;
-}
 
 bool UncensorMuseum()
 {
@@ -83,15 +42,15 @@ bool UnlockRewards()
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
 
 	//Case 2:
-	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(PatternScan("48 89 5C 24 10 57 48 83 EC ? 8B FA 48 8B D9 85 D2 0F 8E ? ? ? ? 48 8D 4C 24 40 48 89 74 24 30 E8 ? ? ? ? 48 8D 4C 24 40 E8 ? ? ? ? 8B F0 48 8D 4C 24 40 C1 E6 ? E8 ? ? ? ? 0B F0 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C7 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C6 48 8B 10 E8 ? ? ? ? 48 8B 74 24 30 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 8B 81 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 89 5C 24 08 44 89 44 24 18"));
-	if (!Orig_SetRewardAvatarAura) return false;;
+	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(PatternScan("48 89 5C 24 10 57 48 83 EC ? 8B FA 48 8B D9 85 D2 0F 8E ? ? ? ? 48 8D 4C 24 40 48 89 74 24 30 E8 ? ? ? ? 48 8D 4C 24 40 E8 ? ? ? ? 8B F0 48 8D 4C 24 40 C1 E6 ? E8 ? ? ? ? 0B F0 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C7 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C6 48 8B 10 E8 ? ? ? ? 48 8B 74 24 30 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 8B 81 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 89 5C 24 10"));
+	if (!Orig_SetRewardAvatarAura) return false;
 
 	//Case 3:
-	Orig_SetRewardNameAura = reinterpret_cast<SetRewardNameAura_t>(PatternScan("48 89 5C 24 10 57 48 83 EC ? 8B FA 48 8B D9 85 D2 0F 8E ? ? ? ? 48 8D 4C 24 40 48 89 74 24 30 E8 ? ? ? ? 48 8D 4C 24 40 E8 ? ? ? ? 8B F0 48 8D 4C 24 40 C1 E6 ? E8 ? ? ? ? 0B F0 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C7 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C6 48 8B 10 E8 ? ? ? ? 48 8B 74 24 30 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 8B 81 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 89 5C 24 08 4C 8B 91 28 04 00 00"));
+	Orig_SetRewardNameAura = reinterpret_cast<SetRewardNameAura_t>(PatternScan("48 89 5C 24 10 57 48 83 EC ? 8B FA 48 8B D9 85 D2 0F 8E ? ? ? ? 48 8D 4C 24 40 48 89 74 24 30 E8 ? ? ? ? 48 8D 4C 24 40 E8 ? ? ? ? 8B F0 48 8D 4C 24 40 C1 E6 ? E8 ? ? ? ? 0B F0 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C7 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 48 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 44 8B C6 48 8B 10 E8 ? ? ? ? 48 8B 74 24 30 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 8B 81 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 83 28 01 00 00 48 85 C0 74 ? 48 8B 15 ? ? ? ? 48 8D 4C 24 40 41 B8 ? ? ? ? E8 ? ? ? ? 48 8B 8B 28 01 00 00 45 33 C0 48 8B 10 E8 ? ? ? ? 48 8B 5C 24 38 48 83 C4 ? 5F C3 48 89 5C 24 08"));
 	if (!Orig_SetRewardNameAura) return false;
 
 	//Case 4:
-	Orig_SetRewardBadge = reinterpret_cast<SetRewardBadge_t>(PatternScan("48 89 5C 24 08 44 89 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 4C 8B E9"));
+	Orig_SetRewardBadge = reinterpret_cast<SetRewardBadge_t>(PatternScan("48 89 5C 24 10 55 56 41 54 41 56 41 57 48 83 EC ?"));
 	if (!Orig_SetRewardBadge) return false;
 
 	Orig_UpdateOnlineCheatPt = reinterpret_cast<UpdateOnlineCheatPt_t>(PatternScan("48 89 5C 24 18 57 48 83 EC ? 48 83 B9 28 01 00 00 ?"));
@@ -106,17 +65,6 @@ void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 {
 	if (add < 0) add = 0;
 	Orig_AddInGameCash(CSaveDataManager, add);
-}
-
-char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)
-{
-	return	(colorID >= COLORMIN && colorID < COLORLIMIT) || colorID == SPCOLOR ||
-		(charaID == SOL && colorID == BETACOLOR) ||
-		((charaID == MILLIA || charaID == ZATO || charaID == RAM || charaID == LEO) && colorID == TESTCOLOR) ||
-		(charaID == BAIKEN && colorID == ALTCOLOR) ||
-		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
-		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR)
-		;
 }
 
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
