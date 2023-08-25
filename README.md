@@ -7,6 +7,8 @@ No censorship in the Museum!
 
 Reward Unlocker (Auras)
 
+Custom R-Code Avatar
+
 Instructions:
 
 1. Place UMPDC.dll inside your "GGST-Win64-Shipping.exe" folder
@@ -16,3 +18,5 @@ Instructions:
 Optional:
 
 Edit GGSTEnhancer.ini for custom settings (it is created when opening the game for the first time)
+
+Place an image called "Avatar.png" in the same folder, maximum file size is 262400 bytes, the alpha channel must be inverted for it to be visible ingame
