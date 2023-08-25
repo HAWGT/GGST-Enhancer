@@ -6,11 +6,9 @@
 #include <fstream>
 #include <sstream>
 
-inline const char ConfigFileName[] = ".\\RED\\Binaries\\Win64\\GGSTEnhancer.ini";
-
 void PatchAll()
 {
-	std::ifstream in(ConfigFileName);
+	std::ifstream config(ConfigFileName);
 
 	auto CreateConsole = [](const char* name) {
 		FILE* ConsoleIO;
@@ -24,12 +22,12 @@ void PatchAll()
 		SetConsoleTitleA(name);
 	};
 
-	if (in.is_open())
+	if (config.is_open())
 	{
 		std::string param;
 		unsigned int value = 0;
 
-		while (in >> param >> value)
+		while (config >> param >> value)
 		{
 			if (!param.compare("Console"))
 			{
@@ -65,7 +63,7 @@ void PatchAll()
 			}
 		}
 
-		in.close();
+		config.close();
 	}
 	else
 	{
@@ -93,6 +91,10 @@ void PatchAll()
 
 	std::cout << "[+] Unlocking Rewards" << std::endl;
 	while (!UnlockRewards()) {};
+	std::cout << "[+] Success!" << std::endl;
+
+	std::cout << "[+] Custom Avatar Image" << std::endl;
+	while (!CustomAvatarImage()) {};
 	std::cout << "[+] Success!" << std::endl;
 
 	std::cout << "[+] Done!" << std::endl;

@@ -56,6 +56,8 @@ void Patch(BYTE* src, BYTE* dst, const ULONG64 size)
     VirtualProtect(dst, size, curProtection, &curProtection);
 }
 
+//Using RAX can cause crashes in functions that rely on it afterwards
+
 bool Detour64(BYTE* src, BYTE* dst, const ULONG64 size)
 {
 	if (size < 12) return false;

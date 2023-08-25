@@ -2,6 +2,9 @@
 #include "Helpers.h"
 #include "Badges.h"
 
+#include <fstream>
+#include <filesystem>
+
 bool UncensorMuseum()
 {
 	BYTE* MuseumFigureNSFWFlagSetterList = PatternScan("0F B6 43 61 48 8B 5C 24 30");
@@ -61,6 +64,55 @@ bool UnlockRewards()
 	return true;
 }
 
+bool CustomAvatarImage()
+{
+	Orig_SetToDefault_All = reinterpret_cast<SetToDefault_All_t>(PatternScan("48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC ? 45 33 FF 48 8D B9 D4 00 00 00"));
+	if (!Orig_SetToDefault_All) return false;
+
+	Orig_ExportAvatarImage = reinterpret_cast<ExportAvatarImage_t>(PatternScan("40 55 48 8D 6C 24 A9 48 81 EC ? ? ? ? 48 8B 01"));
+	if (!Orig_ExportAvatarImage) return false;
+
+	Orig_ExportAvatarImage = reinterpret_cast<ExportAvatarImage_t>(TrampHook64((BYTE*)Orig_ExportAvatarImage, (BYTE*)hk_ExportAvatarImage, 14));
+	if (!Orig_ExportAvatarImage) return false;
+
+	Orig_SetToDefault_All = reinterpret_cast<SetToDefault_All_t>(TrampHook64((BYTE*)Orig_SetToDefault_All, (BYTE*)hk_SetToDefault_All, 15));
+	if (!Orig_SetToDefault_All) return false;
+
+	return true;
+}
+
+bool ReplaceAvatarImage()
+{
+	if (CSaveDataManagerInstance == 0) return false;
+
+	std::ofstream original(".\\Avatar_Original.png", std::ios::out | std::ios::binary);
+	if (original.is_open() && *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) > 0)
+	{
+		original.write(reinterpret_cast<const char*>((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET)), *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET));
+	}
+	original.close();
+
+	std::ifstream image(AvatarFileName, std::ios::in | std::ios::binary | std::ios::ate);
+	std::streamsize size = image.tellg();
+
+	if (size <= AVATAR_IMAGE_DATA_MAX_SIZE + 0 && size > 0)
+	{
+		image.seekg(0, std::ios::beg);
+
+		std::vector<char> buffer(size);
+		if (image.read(buffer.data(), size))
+		{
+			memcpy_s((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET), size, buffer.data(), size);
+			*(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) = (int)size;
+			*(BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_VALID_OFFSET) = 1;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 {
 	if (add < 0) add = 0;
@@ -69,7 +121,6 @@ void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 
 __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 {
-
 	if (bGetRewardAuras)
 	{
 		Orig_SetRewardAvatarAura(UREDPlayerData, SelectedRewardAvatarAura);
@@ -101,5 +152,25 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 
 void __fastcall hk_UpdateOnlineCheatPt(__int64 UREDPlayerData, char isMatchEnd)
 {
-	//This function is called 61 times on match end (Park)
+	return;
+}
+
+__int64 __fastcall hk_SetToDefault_All(__int64 CSaveDataManager)
+{
+	CSaveDataManagerInstance = CSaveDataManager;
+	__int64 returnVal = Orig_SetToDefault_All(CSaveDataManager);
+	ReplaceAvatarImage();
+	return returnVal;
+}
+
+__int64 __fastcall hk_ExportAvatarImage(__int64 UREDWidgetLobbyAvatarEditor)
+{
+	__int64 returnVal = Orig_ExportAvatarImage(UREDWidgetLobbyAvatarEditor);
+
+	if (ReplaceAvatarImage())
+	{
+		*(BYTE*)(UREDWidgetLobbyAvatarEditor + UPLOAD_AVATAR_IMAGE_FLAG_OFFSET) = 1;
+	}
+
+	return returnVal;
 }
