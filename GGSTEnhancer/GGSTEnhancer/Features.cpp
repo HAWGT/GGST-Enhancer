@@ -95,7 +95,7 @@ bool ReplaceAvatarImage()
 	std::ifstream image(AvatarFileName, std::ios::in | std::ios::binary | std::ios::ate);
 	std::streamsize size = image.tellg();
 
-	if (size <= AVATAR_IMAGE_DATA_MAX_SIZE + 0 && size > 0)
+	if (size <= AVATAR_IMAGE_DATA_MAX_SIZE && size > 0)
 	{
 		image.seekg(0, std::ios::beg);
 
