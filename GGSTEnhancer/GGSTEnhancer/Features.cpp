@@ -85,7 +85,7 @@ bool ReplaceAvatarImage()
 {
 	if (CSaveDataManagerInstance == 0) return false;
 
-	std::ofstream original(".\\Avatar_Original.png", std::ios::out | std::ios::binary);
+	std::ofstream original(OriginalAvatarFileName, std::ios::out | std::ios::binary);
 	if (original.is_open() && *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) > 0)
 	{
 		original.write(reinterpret_cast<const char*>((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET)), *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET));

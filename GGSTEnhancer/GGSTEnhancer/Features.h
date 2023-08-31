@@ -2,6 +2,7 @@
 
 inline const char ConfigFileName[] = ".\\RED\\Binaries\\Win64\\GGSTEnhancer.ini";
 inline const char AvatarFileName[] = ".\\Avatar.png"; //Context changed
+inline const char OriginalAvatarFileName[] = ".\\Avatar_Original.png"; //Context changed
 
 inline const unsigned int UPLOAD_AVATAR_IMAGE_FLAG_OFFSET = 0x469;
 inline const unsigned int AVATAR_IMAGE_DATA_MAX_SIZE = 262400;
