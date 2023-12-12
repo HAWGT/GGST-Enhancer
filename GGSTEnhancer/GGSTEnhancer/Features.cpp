@@ -10,7 +10,7 @@ bool UncensorMuseum()
 	BYTE* MuseumFigureNSFWFlagSetterList = PatternScan("0F B6 43 61 48 8B 5C 24 30");
 	if (!MuseumFigureNSFWFlagSetterList) return false;
 
-	BYTE* MuseumFigureNSFWFlagSetterModal = PatternScan("0F B6 43 61 88 47 61 0F B6 43 68 88 47 68 0F B6 43 70 88 47 70 8B 43 74 89 47 74 8B 43 78 89 47 78 E8 ? ? ? ? 48 8B 83 90 00 00 00 48 89 87 90 00 00 00 48 8B 83 98 00 00 00 48 89 87 98 00 00 00 8B 83 A0 00 00 00 89 87 A0 00 00 00 8B 83 A4 00 00 00 89 87 A4 00 00 00 0F B6 83 A8 00 00 00 48 8B 5C 24 30 88 87 A8 00 00 00 48 8B C7 48 83 C4 ? 5F C3 CC CC CC CC CC 40 57");
+	BYTE* MuseumFigureNSFWFlagSetterModal = PatternScan("0F B6 43 61 88 47 61 0F B6 43 62");
 	if (!MuseumFigureNSFWFlagSetterModal) return false;
 
 	BYTE MuseumFigureNSFWFlagSetterPatch[] = { 0x30, 0xC0, 0x90, 0x90 }; //xor al, al (nop nop)
@@ -115,6 +115,12 @@ bool ReplaceAvatarImage()
 
 void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 {
+	std::ofstream original(OriginalAvatarFileName, std::ios::out | std::ios::binary);
+	if (original.is_open() && *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) > 0)
+	{
+		original.write(reinterpret_cast<const char*>((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET)), *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET));
+	}
+	original.close();
 	if (add < 0) add = 0;
 	Orig_AddInGameCash(CSaveDataManager, add);
 }
