@@ -115,12 +115,6 @@ bool ReplaceAvatarImage()
 
 void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 {
-	std::ofstream original(OriginalAvatarFileName, std::ios::out | std::ios::binary);
-	if (original.is_open() && *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) > 0)
-	{
-		original.write(reinterpret_cast<const char*>((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET)), *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET));
-	}
-	original.close();
 	if (add < 0) add = 0;
 	Orig_AddInGameCash(CSaveDataManager, add);
 }
