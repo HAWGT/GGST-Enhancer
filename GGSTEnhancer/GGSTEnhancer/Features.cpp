@@ -265,10 +265,12 @@ __int64 __fastcall hk_GenerateThumbnail(__int64 Instance)
 			int OriginalThumbnailSize = *(int*)(Instance + THUMBNAIL_IMAGE_DATA_SIZE_OFFSET);
 
 			std::ofstream original(OriginalThumbnailFileName, std::ios::out | std::ios::binary);
+
 			if (original.is_open() && *(int*)(Instance + THUMBNAIL_IMAGE_DATA_SIZE_OFFSET) > 0)
 			{
 				original.write(reinterpret_cast<const char*>(OriginalThumbnail), OriginalThumbnailSize);
 			}
+
 			original.close();
 
 			memcpy_s(ThumbnailAlloc, size, buffer.data(), size);
@@ -283,7 +285,11 @@ __int64 __fastcall hk_GenerateThumbnail(__int64 Instance)
 
 __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 {
-	Orig_Free(OriginalThumbnail);
-	*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = 0;
+	if (*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) == (__int64)ThumbnailAlloc && OriginalThumbnail != 0)
+	{
+		Orig_Free(OriginalThumbnail);
+		OriginalThumbnail = 0;
+		*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = 0;
+	}
 	return Orig_FigureCleanup(Instance, a2);
 }
