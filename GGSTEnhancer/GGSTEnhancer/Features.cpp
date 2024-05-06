@@ -5,6 +5,12 @@
 #include <fstream>
 #include <filesystem>
 
+inline BYTE* RefreshSetLocal = nullptr;
+inline BYTE* RefreshSetOnline = nullptr;
+
+inline BYTE Orig_RefreshSetLocal[] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
+inline BYTE Orig_RefreshSetOnline[] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
+
 bool UncensorMuseum()
 {
 	BYTE* MuseumFigureNSFWFlagSetterList = PatternScan("0F B6 43 61 48 8B 5C 24 30");
@@ -81,6 +87,28 @@ bool CustomAvatarImage()
 	return true;
 }
 
+bool CustomThumbnail()
+{
+	Orig_GenerateThumbnail = reinterpret_cast<GenerateThumbnail_t>(PatternScan("40 56 48 83 EC ? 48 89 5C 24 58 0F 57 C9"));
+	if (!Orig_GenerateThumbnail) return false;
+
+	Orig_GenerateThumbnail = reinterpret_cast<GenerateThumbnail_t>(TrampHook64((BYTE*)Orig_GenerateThumbnail, (BYTE*)hk_GenerateThumbnail, 14));
+	if (!Orig_GenerateThumbnail) return false;
+
+	Orig_Free = reinterpret_cast<Free_t>(PatternScan("48 85 C9 74 ? 53 48 83 EC ? 48 8B D9 48 8B 0D ? ? ? ?"));
+	if (!Orig_Free) return false;
+
+	Orig_FigureCleanup = reinterpret_cast<FigureCleanup_t>(PatternScan("48 89 5C 24 08 57 48 83 EC ? 48 8B D9 8B FA 48 8B 89 40 03 00 00 48 85 C9 74 ? E8 ? ? ? ? 48 8D 8B F8 02 00 00"));
+	if (!Orig_FigureCleanup) return false;
+
+	Orig_FigureCleanup = reinterpret_cast<FigureCleanup_t>(TrampHook64((BYTE*)Orig_FigureCleanup, (BYTE*)hk_FigureCleanup, 13));
+	if (!Orig_FigureCleanup) return false;
+
+	ThumbnailAlloc = VirtualAlloc(nullptr, THUMBNAIL_IMAGE_DATA_MAX_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+	return true;
+}
+
 bool ReplaceAvatarImage()
 {
 	if (CSaveDataManagerInstance == 0) return false;
@@ -113,14 +141,38 @@ bool ReplaceAvatarImage()
 	return false;
 }
 
+bool AntiPNGBomb()
+{
+	Orig_CreateTransient = reinterpret_cast<CreateTransient_t>(PatternScan("4C 8B DC 53 55 56 41 55"));
+	if (!Orig_CreateTransient) return false;
+
+	Orig_CreateTransient = reinterpret_cast<CreateTransient_t>(TrampHook64((BYTE*)Orig_CreateTransient, (BYTE*)hk_CreateTransient, 14));
+	if (!Orig_CreateTransient) return false;
+
+	RefreshSetLocal = PatternScan("E8 ? ? ? ? EB ? 48 8B 07 48 8D 55 C7");
+	if (!RefreshSetLocal) return false;
+
+	memcpy_s(Orig_RefreshSetLocal, 5, RefreshSetLocal, 5);
+
+	RefreshSetOnline = PatternScan("E8 ? ? ? ? E8 ? ? ? ? 48 8B 4B 10 48 8B D0 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ?");
+	if (!RefreshSetOnline) return false;
+
+	memcpy_s(Orig_RefreshSetOnline, 5, RefreshSetOnline, 5);
+
+	return true;
+}
+
 void __fastcall hk_AddInGameCash(__int64 CSaveDataManager, int add)
 {
-	std::ofstream original(OriginalAvatarFileName, std::ios::out | std::ios::binary);
+	std::ofstream original(AvatarBackupFileName, std::ios::out | std::ios::binary);
+
 	if (original.is_open() && *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET) > 0)
 	{
 		original.write(reinterpret_cast<const char*>((BYTE*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET)), *(int*)(CSaveDataManagerInstance + AVATAR_IMAGE_DATA_OFFSET + AVATAR_IMAGE_DATA_SIZE_OFFSET));
 	}
+
 	original.close();
+
 	if (add < 0) add = 0;
 	Orig_AddInGameCash(CSaveDataManager, add);
 }
@@ -141,17 +193,14 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 		}
 	}
 
-	if (bAntiRQFlag)
+	//Min: -10, Max: 50, Negative Step: 8, Positive Step: 9, 9 * 7 = 63
+	for (int i = 0; i < 7; i++)
 	{
-		//Min: -10, Max: 50, Negative Step: 8, Positive Step: 9, 9 * 7 = 63
-		for (int i = 0; i < 7; i++)
-		{
-			Orig_UpdateOnlineCheatPt(UREDPlayerData, 1);
-		}
-
-		//Neutralize this function
-		Detour64((BYTE*)Orig_UpdateOnlineCheatPt, (BYTE*)hk_UpdateOnlineCheatPt, 12);
+		Orig_UpdateOnlineCheatPt(UREDPlayerData, 1);
 	}
+
+	//Neutralize this function
+	Detour64((BYTE*)Orig_UpdateOnlineCheatPt, (BYTE*)hk_UpdateOnlineCheatPt, 12);
 
 	return 0;
 }
@@ -179,4 +228,62 @@ __int64 __fastcall hk_ExportAvatarImage(__int64 UREDWidgetLobbyAvatarEditor)
 	}
 
 	return returnVal;
+}
+
+__int64 __fastcall hk_CreateTransient(int InSizeX, int InSizeY, __int64 InFormat, __int64 InName)
+{
+	BYTE NOPPatch[] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
+
+	if (InSizeX > MAX_TEXTURE_AXIS_DIMENSION || InSizeY > MAX_TEXTURE_AXIS_DIMENSION)
+	{
+		Patch(NOPPatch, RefreshSetLocal, sizeof(NOPPatch));
+		Patch(NOPPatch, RefreshSetOnline, sizeof(NOPPatch));
+		return 0;
+	}
+
+	Patch(Orig_RefreshSetLocal, RefreshSetLocal, sizeof(Orig_RefreshSetLocal));
+	Patch(Orig_RefreshSetOnline, RefreshSetOnline, sizeof(Orig_RefreshSetOnline));
+
+	return Orig_CreateTransient(InSizeX, InSizeY, InFormat, InName);
+}
+
+__int64 __fastcall hk_GenerateThumbnail(__int64 Instance)
+{
+	__int64 retval = Orig_GenerateThumbnail(Instance);
+
+	std::ifstream image(ThumbnailFileName, std::ios::in | std::ios::binary | std::ios::ate);
+	std::streamsize size = image.tellg();
+
+	if (size <= THUMBNAIL_IMAGE_DATA_MAX_SIZE && size > 0 && ThumbnailAlloc)
+	{
+		image.seekg(0, std::ios::beg);
+
+		std::vector<char> buffer(size);
+		if (image.read(buffer.data(), size))
+		{
+			OriginalThumbnail = *(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET);
+			int OriginalThumbnailSize = *(int*)(Instance + THUMBNAIL_IMAGE_DATA_SIZE_OFFSET);
+
+			std::ofstream original(OriginalThumbnailFileName, std::ios::out | std::ios::binary);
+			if (original.is_open() && *(int*)(Instance + THUMBNAIL_IMAGE_DATA_SIZE_OFFSET) > 0)
+			{
+				original.write(reinterpret_cast<const char*>(OriginalThumbnail), OriginalThumbnailSize);
+			}
+			original.close();
+
+			memcpy_s(ThumbnailAlloc, size, buffer.data(), size);
+
+			*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = (__int64)ThumbnailAlloc;
+			*(int*)(Instance + THUMBNAIL_IMAGE_DATA_SIZE_OFFSET) = (int)size;
+		}
+	}
+
+	return retval;
+}
+
+__int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
+{
+	Orig_Free(OriginalThumbnail);
+	*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = (__int64)0;
+	return Orig_FigureCleanup(Instance, a2);
 }

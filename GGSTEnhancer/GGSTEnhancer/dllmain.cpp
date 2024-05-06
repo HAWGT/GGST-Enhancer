@@ -56,11 +56,6 @@ void PatchAll()
 				bGetRewardBadges = value == 1;
 				std::cout << param << " " << bGetRewardBadges << std::endl;
 			}
-			if (!param.compare("AntiRQFlag"))
-			{
-				bAntiRQFlag = value == 1;
-				std::cout << param << " " << bAntiRQFlag << std::endl;
-			}
 		}
 
 		config.close();
@@ -76,7 +71,6 @@ void PatchAll()
 		ConfigFile << "RewardAvatarAura 0" << std::endl;
 		ConfigFile << "RewardNameAura 0" << std::endl;
 		ConfigFile << "GetRewardBadges 0" << std::endl;
-		ConfigFile << "AntiRQFlag 0" << std::endl;
 
 		ConfigFile.close();
 	}
@@ -95,6 +89,14 @@ void PatchAll()
 
 	std::cout << "[+] Custom Avatar Image" << std::endl;
 	while (!CustomAvatarImage()) {};
+	std::cout << "[+] Success!" << std::endl;
+
+	std::cout << "[+] Anti PNG Bomb" << std::endl;
+	while (!AntiPNGBomb()) {};
+	std::cout << "[+] Success!" << std::endl;
+
+	std::cout << "[+] Custom Thumbnail" << std::endl;
+	while (!CustomThumbnail()) {};
 	std::cout << "[+] Success!" << std::endl;
 
 	std::cout << "[+] Done!" << std::endl;
