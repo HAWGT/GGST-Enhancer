@@ -291,5 +291,6 @@ __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 		OriginalThumbnail = 0;
 		*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = 0;
 	}
+
 	return Orig_FigureCleanup(Instance, a2);
 }
