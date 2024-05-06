@@ -284,6 +284,6 @@ __int64 __fastcall hk_GenerateThumbnail(__int64 Instance)
 __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 {
 	Orig_Free(OriginalThumbnail);
-	*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = (__int64)0;
+	*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) = 0;
 	return Orig_FigureCleanup(Instance, a2);
 }
