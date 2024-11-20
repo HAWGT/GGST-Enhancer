@@ -7,6 +7,8 @@ inline const char OriginalAvatarFileName[] = ".\\Avatar_Original.png"; //Context
 inline const char ThumbnailFileName[] = ".\\Thumbnail.jpg"; //Context changed
 inline const char OriginalThumbnailFileName[] = ".\\Thumbnail_Original.jpg"; //Context changed
 
+//40 55 48 8D 6C 24 A9 48 81 EC ? ? ? ? 48 8B 01
+
 inline const unsigned int UPLOAD_AVATAR_IMAGE_FLAG_OFFSET = 0x469;
 inline const unsigned int AVATAR_IMAGE_DATA_MAX_SIZE = 262400;
 inline const unsigned int AVATAR_IMAGE_DATA_OFFSET = 0x7ED348;
