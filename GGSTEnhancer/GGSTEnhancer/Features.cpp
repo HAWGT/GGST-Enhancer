@@ -52,7 +52,7 @@ bool UnlockRewards()
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
 
 	//Case 2:
-	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(GetAddressFromInstruction((uintptr_t)PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 18 0B 00 00 E8 ? ? ? ?"), 5));
+	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(GetAddressFromInstruction((uintptr_t)PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 18 0B 00 00 E8 ? ? ? ?") + 0x38, 5));
 	if (!Orig_SetRewardAvatarAura) return false;
 
 	//Case 3:
