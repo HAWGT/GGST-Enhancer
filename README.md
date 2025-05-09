@@ -1,6 +1,8 @@
 # GGST-Enhancer
 GGST ENHANCER
 
+Color Unlocker (only others with the tool will see it!)
+
 Improved Fishing (no duplicates)
 
 No censorship in the Museum!
