@@ -71,6 +71,7 @@ void PatchAll()
 		ConfigFile << "RewardAvatarAura 0" << std::endl;
 		ConfigFile << "RewardNameAura 0" << std::endl;
 		ConfigFile << "GetRewardBadges 0" << std::endl;
+
 		ConfigFile.close();
 	}
 
