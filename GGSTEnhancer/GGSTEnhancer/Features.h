@@ -32,6 +32,8 @@ bool CustomAvatarImage();
 bool CustomThumbnail();
 bool ReplaceAvatarImage();
 bool AntiPNGBomb();
+//bool DLCUnlocker();
+bool ColorUnlocker();
 
 inline bool bGetRewardAuras = false;
 inline unsigned int SelectedRewardAvatarAura = 0;
@@ -82,3 +84,6 @@ __int64 __fastcall hk_GenerateThumbnail(__int64 Instance);
 typedef __int64(__fastcall* FigureCleanup_t)(__int64 Instance, char a2);
 inline FigureCleanup_t Orig_FigureCleanup;
 __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2);
+
+char __fastcall hk_ColorCheck(unsigned int charaID, unsigned int colorID);
+//__int64 __fastcall hk_IsUnlocked(const wchar_t* pDLCName);

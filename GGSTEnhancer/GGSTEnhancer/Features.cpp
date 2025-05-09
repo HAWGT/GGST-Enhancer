@@ -1,6 +1,8 @@
 #include "Features.h"
 #include "Helpers.h"
 #include "Badges.h"
+#include "Character.h"
+#include "Color.h"
 
 #include <fstream>
 #include <filesystem>
@@ -65,9 +67,9 @@ bool UnlockRewards()
 
 	Orig_UpdateOnlineCheatPt = reinterpret_cast<UpdateOnlineCheatPt_t>(PatternScan("48 89 5C 24 18 57 48 83 EC ? 48 83 B9 40 01 00 00 ?"));
 	if (!Orig_UpdateOnlineCheatPt) return false;
-
+	
 	Detour64(Orig_CheckRewardAura, (BYTE*)hk_CheckRewardAura, 12);
-
+	
 	return true;
 }
 
@@ -159,6 +161,30 @@ bool AntiPNGBomb()
 	if (!RefreshSetOnline) return false;
 
 	memcpy_s(Orig_RefreshSetOnline, 5, RefreshSetOnline, 5);
+
+	return true;
+}
+
+/*
+bool DLCUnlocker()
+{
+	void* Orig_IsUnlocked = PatternScan("40 53 55 56 57 48 83 EC ? 48 8B E9 48 8B D1");
+	if (!Orig_IsUnlocked) return false;
+
+	Detour64((BYTE*)Orig_IsUnlocked, (BYTE*)hk_IsUnlocked, 12);
+	return true;
+}
+*/
+
+bool ColorUnlocker()
+{
+	void* IsSelectableCharaColorID = PatternScan("48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 20 55 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ? 45 33 ED 8B FA");
+	if (!IsSelectableCharaColorID) return false;
+	Detour64((BYTE*)IsSelectableCharaColorID, (BYTE*)hk_ColorCheck, 15);
+
+	void* IsAllowedCharaColorID = PatternScan("83 FA ? 76 ? 83 FA ? 75 ?");
+	if (!IsAllowedCharaColorID) return false;
+	Detour64((BYTE*)IsAllowedCharaColorID, (BYTE*)hk_ColorCheck, 15);
 
 	return true;
 }
@@ -295,3 +321,19 @@ __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 
 	return Orig_FigureCleanup(Instance, a2);
 }
+
+char __fastcall hk_ColorCheck(unsigned int charaID, unsigned int colorID)
+{
+	return	(colorID >= COLORMIN && colorID < COLORLIMIT) || colorID == SPCOLOR ||
+		(charaID == BAIKEN && colorID == ALTCOLOR) ||
+		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
+		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR)
+		;
+}
+
+/*
+__int64 __fastcall hk_IsUnlocked(const wchar_t* pDLCName)
+{
+	return true;
+}
+*/

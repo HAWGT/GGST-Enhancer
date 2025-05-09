@@ -71,7 +71,6 @@ void PatchAll()
 		ConfigFile << "RewardAvatarAura 0" << std::endl;
 		ConfigFile << "RewardNameAura 0" << std::endl;
 		ConfigFile << "GetRewardBadges 0" << std::endl;
-
 		ConfigFile.close();
 	}
 
@@ -97,6 +96,16 @@ void PatchAll()
 
 	std::cout << "[+] Custom Thumbnail" << std::endl;
 	while (!CustomThumbnail()) {};
+	std::cout << "[+] Success!" << std::endl;
+
+	/*
+	std::cout << "[+] DLC Unlocker" << std::endl;
+	while (!DLCUnlocker()) {};
+	std::cout << "[+] Success!" << std::endl;
+	*/
+
+	std::cout << "[+] Color Unlocker" << std::endl;
+	while (!ColorUnlocker()) {};
 	std::cout << "[+] Success!" << std::endl;
 
 	std::cout << "[+] Done!" << std::endl;

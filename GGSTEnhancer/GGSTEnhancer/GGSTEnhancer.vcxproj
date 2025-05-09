@@ -146,6 +146,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Badges.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Features.h" />
     <ClInclude Include="Helpers.h" />
   </ItemGroup>
