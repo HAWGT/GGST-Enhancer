@@ -75,7 +75,7 @@ bool Detour64(BYTE* src, BYTE* dst, const ULONG64 size)
 BYTE* TrampHook64(BYTE* src, BYTE* dst, const ULONG64 size)
 {
     if (size < 12) return 0;
-    BYTE* gateway = (BYTE*)VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    BYTE* gateway = (BYTE*)VirtualAlloc(0, size + 12, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
     memcpy_s(gateway, size, src, size);
     //mov rax, ULONG64
     *(BYTE*)(gateway + size) = 0x48;
