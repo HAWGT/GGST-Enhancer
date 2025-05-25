@@ -43,6 +43,12 @@ bool ImproveFishing()
 	Orig_AddInGameCash = reinterpret_cast<AddInGameCash_t>(TrampHook64((BYTE*)Orig_AddInGameCash, (BYTE*)hk_AddInGameCash, 19)); //No need for this many bytes, but it makes it easier to visualize and debug
 	if (!Orig_AddInGameCash) return false;
 
+	BYTE* DBM_ForceValidRollWeight = (BYTE*)(GetAddressFromInstruction((uintptr_t)PatternScan("83 3D ? ? ? ? ? 0F 84 ? ? ? ? 44 8B 54 24 70"), 6) + 1); //7th byte is the value of the comparison, not part of the address, but it needs to be accounted for
+
+	if (!DBM_ForceValidRollWeight) return false;
+
+	*DBM_ForceValidRollWeight = 0x1;
+
 	return true;
 }
 
