@@ -3,7 +3,7 @@ GGST ENHANCER
 
 Color Unlocker (only others with the tool will see it!)
 
-Improved Fishing (no duplicates)
+Improved Fishing (no duplicates and secret items)
 
 No censorship in the Museum!
 
