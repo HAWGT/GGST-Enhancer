@@ -158,7 +158,7 @@ bool AntiPNGBomb()
 	Orig_CreateTransient = reinterpret_cast<CreateTransient_t>(TrampHook64((BYTE*)Orig_CreateTransient, (BYTE*)hk_CreateTransient, 14));
 	if (!Orig_CreateTransient) return false;
 
-	RefreshSetLocal = PatternScan("E8 ? ? ? ? EB ? 49 8B 06 48 8D 55 C7");
+	RefreshSetLocal = PatternScan("E8 ? ? ? ? EB ? 49 8B 06 48 8D 55 9F");
 	if (!RefreshSetLocal) return false;
 
 	memcpy_s(Orig_RefreshSetLocal, 5, RefreshSetLocal, 5);
