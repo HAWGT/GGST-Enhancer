@@ -330,7 +330,7 @@ __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 
 char __fastcall hk_ColorCheck(unsigned int charaID, unsigned int colorID)
 {
-	return	(colorID >= COLORMIN && colorID < COLORLIMIT) || colorID == SPCOLOR ||
+	return	(colorID >= COLORMIN && colorID <= COLORLIMIT) || colorID == SPCOLOR ||
 		(charaID == BAIKEN && colorID == ALTCOLOR) ||
 		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
 		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR)
