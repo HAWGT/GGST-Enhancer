@@ -43,7 +43,10 @@ bool ImproveFishing()
 	Orig_AddInGameCash = reinterpret_cast<AddInGameCash_t>(TrampHook64((BYTE*)Orig_AddInGameCash, (BYTE*)hk_AddInGameCash, 19)); //No need for this many bytes, but it makes it easier to visualize and debug
 	if (!Orig_AddInGameCash) return false;
 
-	BYTE* DBM_ForceValidRollWeight = (BYTE*)(GetAddressFromInstruction((uintptr_t)PatternScan("83 3D ? ? ? ? ? 0F 84 ? ? ? ? 44 8B 54 24 70"), 6) + 1); //7th byte is the value of the comparison, not part of the address, but it needs to be accounted for
+	BYTE* ForceValidRoll = PatternScan("83 3D ? ? ? ? ? 0F 84 ? ? ? ? 44 8B 54 24 70");
+	if (!ForceValidRoll) return false;
+
+	BYTE* DBM_ForceValidRollWeight = (BYTE*)(GetAddressFromInstruction((uintptr_t)ForceValidRoll, 6) + 1); //7th byte is the value of the comparison, not part of the address, but it needs to be accounted for
 
 	if (!DBM_ForceValidRollWeight) return false;
 
@@ -55,25 +58,37 @@ bool ImproveFishing()
 bool UnlockRewards()
 {
 	BYTE* Orig_CheckRewardAura = PatternScan("48 89 5C 24 20 55 56 57 48 83 EC ? 48 8B D9 48 8D 4C 24 40");
-	if (!Orig_CheckRewardAura) return false;
+	if (!Orig_CheckRewardAura)
+	{
+		std::cout << "Orig_CheckRewardAura" << std::endl;
+		return false;
+	}
 
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
 
 	//Case 2:
-	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(GetAddressFromInstruction((uintptr_t)PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 18 0B 00 00 E8 ? ? ? ?") + 0x38, 5));
+	BYTE* FindSetRewardAvatarAura = PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 28 0B 00 00 E8 ? ? ? ?");
+	if (!FindSetRewardAvatarAura) return false;
+
+	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(GetAddressFromInstruction((uintptr_t)FindSetRewardAvatarAura + 0x38, 5));
 	if (!Orig_SetRewardAvatarAura) return false;
 
 	//Case 3:
-	Orig_SetRewardNameAura = reinterpret_cast<SetRewardNameAura_t>(GetAddressFromInstruction((uintptr_t)PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 45 85 D2"), 5));
+	BYTE* FindSetRewardNameAura = PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 45 85 D2");
+	if (!FindSetRewardNameAura) return false;
+
+	Orig_SetRewardNameAura = reinterpret_cast<SetRewardNameAura_t>(GetAddressFromInstruction((uintptr_t)FindSetRewardNameAura, 5));
 	if (!Orig_SetRewardNameAura) return false;
 
 	//Case 4:
 	Orig_SetRewardBadge = reinterpret_cast<SetRewardBadge_t>(PatternScan("48 89 5C 24 10 55 56 41 54 41 56 41 57 48 83 EC ?"));
 	if (!Orig_SetRewardBadge) return false;
 
-	Orig_UpdateOnlineCheatPt = reinterpret_cast<UpdateOnlineCheatPt_t>(PatternScan("48 89 5C 24 18 57 48 83 EC ? 48 83 B9 40 01 00 00 ?"));
+	//RequestUploadBasic() Error
+
+	Orig_UpdateOnlineCheatPt = reinterpret_cast<UpdateOnlineCheatPt_t>(PatternScan("48 89 5C 24 18 57 48 83 EC ? 48 83 B9 F0 01 00 00 ?"));
 	if (!Orig_UpdateOnlineCheatPt) return false;
-	
+
 	Detour64(Orig_CheckRewardAura, (BYTE*)hk_CheckRewardAura, 12);
 	
 	return true;
@@ -158,12 +173,17 @@ bool AntiPNGBomb()
 	Orig_CreateTransient = reinterpret_cast<CreateTransient_t>(TrampHook64((BYTE*)Orig_CreateTransient, (BYTE*)hk_CreateTransient, 14));
 	if (!Orig_CreateTransient) return false;
 
-	RefreshSetLocal = PatternScan("E8 ? ? ? ? EB ? 49 8B 06 48 8D 55 9F");
+	//UREDWidgetRCodePageOne::RefreshStatic - 48 85 C9 0F 84 ? ? ? ? 48 8B C4 44 89 48 20
+	//UREDWidgetCommonAvatarFace::SetData_LocalUser
+	//UREDWidgetCommonAvatarFace::SetData_OnlineUser
+
+
+	RefreshSetLocal = PatternScan("E8 ? ? ? ? EB ? 49 8B 07 48 8D 55 C7");
 	if (!RefreshSetLocal) return false;
 
 	memcpy_s(Orig_RefreshSetLocal, 5, RefreshSetLocal, 5);
 
-	RefreshSetOnline = PatternScan("E8 ? ? ? ? E8 ? ? ? ? 48 8B 4B 10 48 8B D0 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ?");
+	RefreshSetOnline = PatternScan("E8 ? ? ? ? E8 ? ? ? ? 48 8B 4F 10 48 8B D0 E8 ? ? ? ? 84 C0 0F 84 ? ? ? ?");
 	if (!RefreshSetOnline) return false;
 
 	memcpy_s(Orig_RefreshSetOnline, 5, RefreshSetOnline, 5);
@@ -188,9 +208,14 @@ bool ColorUnlocker()
 	if (!IsSelectableCharaColorID) return false;
 	Detour64((BYTE*)IsSelectableCharaColorID, (BYTE*)hk_ColorCheck, 15);
 
-	void* IsAllowedCharaColorID = PatternScan("83 FA ? 76 ? 83 FA ? 75 ?");
-	if (!IsAllowedCharaColorID) return false;
-	Detour64((BYTE*)IsAllowedCharaColorID, (BYTE*)hk_ColorCheck, 15);
+	//AREDGameState::UpdateChangeScene()
+	//48 89 4C 24 08 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 D9 48 81 EC ? ? ? ? 80 3D ? ? ? ? ?
+	void* bArcadeEnemyOrbSurvivalEnemy = PatternScan("0F 85 ? ? ? ? 84 D2 0F 84 ? ? ? ? 84 C0");
+	if (!bArcadeEnemyOrbSurvivalEnemy) return false;
+
+	BYTE bArcadeEnemyOrbSurvivalEnemyPatch[] = { 0xE9, 0xCE, 0x01, 0x00, 0x00, 0x90 }; //jmp 0x1d3 (nop)
+
+	Patch(bArcadeEnemyOrbSurvivalEnemyPatch, (BYTE*)bArcadeEnemyOrbSurvivalEnemy, sizeof(bArcadeEnemyOrbSurvivalEnemy));
 
 	return true;
 }
