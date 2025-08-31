@@ -58,11 +58,7 @@ bool ImproveFishing()
 bool UnlockRewards()
 {
 	BYTE* Orig_CheckRewardAura = PatternScan("48 89 5C 24 20 55 56 57 48 83 EC ? 48 8B D9 48 8D 4C 24 40");
-	if (!Orig_CheckRewardAura)
-	{
-		std::cout << "Orig_CheckRewardAura" << std::endl;
-		return false;
-	}
+	if (!Orig_CheckRewardAura) return false;
 
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
 
