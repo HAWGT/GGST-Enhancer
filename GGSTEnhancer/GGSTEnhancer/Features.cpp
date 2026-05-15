@@ -364,7 +364,8 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
 		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR) ||
 		((charaID == SOL || charaID == KY || charaID == AXL || charaID == SIN || charaID == UNIKA || charaID == HC ||
-			charaID == BRIDGET || charaID == RAM || charaID == ELPHELT || charaID == ABA || charaID == MAY) && colorID == COLLABCOLOR);
+			charaID == BRIDGET || charaID == RAM || charaID == ELPHELT || charaID == ABA || charaID == MAY) && colorID == COLLABCOLOR) ||
+		((colorID == HAUNTEDCOLOR) && (charaID == SOL || charaID == KY || charaID == MILLIA || charaID == GOLDLEWIS || charaID == HC || charaID == BAIKEN || charaID == ASUKA || charaID == JAM));
 
 #ifdef _DEBUG
 	bool bBaseUnlocked = (colorID >= COLORMIN && colorID <= COLORLIMIT);
