@@ -361,7 +361,7 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 {
 	bool bCustomUnlock = (colorID == SPCOLOR) ||
 		(charaID == BAIKEN && colorID == ALTCOLOR) ||
-		((charaID == SOL || charaID == KY || charaID == INO || charaID == BAIKEN) && colorID == EXCOLOR) ||
+		((charaID == SOL || charaID == KY) && colorID == EXCOLOR) ||
 		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR) ||
 		((charaID == SOL || charaID == KY || charaID == AXL || charaID == SIN || charaID == UNIKA || charaID == HC ||
 			charaID == BRIDGET || charaID == RAM || charaID == ELPHELT || charaID == ABA || charaID == MAY) && colorID == COLLABCOLOR) ||
