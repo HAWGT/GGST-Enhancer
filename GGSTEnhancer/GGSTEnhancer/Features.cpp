@@ -262,7 +262,7 @@ __int64 __fastcall hk_CheckRewardAura(__int64 UREDPlayerData)
 	}
 
 	//Neutralize this function
-	Detour64((BYTE*)Orig_UpdateOnlineCheatPt, (BYTE*)hk_UpdateOnlineCheatPt, 12);
+	Detour64((BYTE*)Orig_UpdateOnlineCheatPt, (BYTE*)hk_UpdateOnlineCheatPt, 18);
 
 	return 0;
 }
@@ -347,7 +347,7 @@ __int64 __fastcall hk_GenerateThumbnail(__int64 Instance)
 
 __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 {
-	if (*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) == (__int64)ThumbnailAlloc && OriginalThumbnail != 0)
+	if (*(__int64*)(Instance + THUMBNAIL_IMAGE_DATA_OFFSET) == (__int64)ThumbnailAlloc && OriginalThumbnail)
 	{
 		Orig_Free(OriginalThumbnail);
 		OriginalThumbnail = 0;
@@ -373,7 +373,7 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 	bool bBaseUnlocked = Orig_IsSelectableCharaColorID(charaID, colorID, costumeID);
 #endif
 
-	return (bBaseUnlocked || bCustomUnlock) && (costumeID == 0 || (costumeID == 1 && colorID <=1));
+	return ((bBaseUnlocked || bCustomUnlock) && costumeID == 0) || (costumeID == 1 && colorID <=1);
 }
 
 #ifdef _DEBUG
