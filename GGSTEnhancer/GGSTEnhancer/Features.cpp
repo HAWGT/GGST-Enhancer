@@ -357,7 +357,7 @@ __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2)
 	return Orig_FigureCleanup(Instance, a2);
 }
 
-char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID)
+char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID, int costumeID)
 {
 	bool bCustomUnlock = (colorID == SPCOLOR) ||
 		(charaID == BAIKEN && colorID == ALTCOLOR) ||
@@ -370,10 +370,10 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 #ifdef _DEBUG
 	bool bBaseUnlocked = (colorID >= COLORMIN && colorID <= COLORLIMIT);
 #else
-	bool bBaseUnlocked = Orig_IsSelectableCharaColorID(charaID, colorID);
+	bool bBaseUnlocked = Orig_IsSelectableCharaColorID(charaID, colorID, costumeID);
 #endif
 
-	return bBaseUnlocked || bCustomUnlock;
+	return (bBaseUnlocked || bCustomUnlock) && (costumeID == 0 || (costumeID == 1 && colorID <=1));
 }
 
 #ifdef _DEBUG

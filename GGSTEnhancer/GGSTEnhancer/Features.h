@@ -87,9 +87,9 @@ using FigureCleanup_t = __int64(__fastcall*)(__int64 Instance, char a2);
 inline FigureCleanup_t Orig_FigureCleanup;
 __int64 __fastcall hk_FigureCleanup(__int64 Instance, char a2);
 
-using IsSelectableCharaColorID_t = char(__fastcall*)(unsigned int charaID, unsigned int colorID);
+using IsSelectableCharaColorID_t = char(__fastcall*)(unsigned int charaID, unsigned int colorID, int costumeID);
 inline IsSelectableCharaColorID_t Orig_IsSelectableCharaColorID;
-char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID);
+char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int colorID, int costumeID);
 
 #ifdef _DEBUG
 __int64 __fastcall hk_IsUnlocked(const wchar_t* pDLCName);
