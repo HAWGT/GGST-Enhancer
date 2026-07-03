@@ -63,7 +63,7 @@ int UnlockRewards()
 	//Find them with: 48 83 EC ? 8D 42 FF 45 8B D0 (NetworkGiftManager::AddSaveDataParam)
 
 	//Case 2:
-	BYTE* FindSetRewardAvatarAura = PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 30 0B 00 00 E8 ? ? ? ?");
+	BYTE* FindSetRewardAvatarAura = PatternScan("E8 ? ? ? ? B0 ? 48 83 C4 ? C3 48 83 3D ? ? ? ? ? 0F 84 ? ? ? ? 41 8D 42 FF 83 F8 ? 0F 87 ? ? ? ? 48 8B 0D ? ? ? ? 41 8B D2 48 8B 89 40 0B 00 00 E8 ? ? ? ?");
 	if (!FindSetRewardAvatarAura) return 2;
 
 	Orig_SetRewardAvatarAura = reinterpret_cast<SetRewardAvatarAura_t>(GetAddressFromInstruction((uintptr_t)FindSetRewardAvatarAura + 0x38, 5));
@@ -365,10 +365,13 @@ char __fastcall hk_IsSelectableCharaColorID(unsigned int charaID, unsigned int c
 		((charaID == NAGO || charaID == INO || charaID == JACKO || charaID == ASUKA) && colorID == STORYCOLOR) ||
 		((charaID == SOL || charaID == KY || charaID == AXL || charaID == SIN || charaID == UNIKA || charaID == HC ||
 			charaID == BRIDGET || charaID == RAM || charaID == ELPHELT || charaID == ABA || charaID == MAY) && colorID == COLLABCOLOR) ||
-		((colorID == HAUNTEDCOLOR) && (charaID == SOL || charaID == KY || charaID == MILLIA || charaID == GOLDLEWIS || charaID == HC || charaID == BAIKEN || charaID == ASUKA || charaID == JAM));
+		((colorID == HAUNTEDCOLOR) && (charaID == SOL || charaID == KY || charaID == MILLIA || charaID == GOLDLEWIS || charaID == HC || charaID == BAIKEN || charaID == ASUKA || charaID == JAM || 
+			charaID == MAY || charaID == LEO || charaID == GIOVANNA || charaID == INO || charaID == JACKO || charaID == BRIDGET || charaID == JOHNNY || charaID == VENOM || charaID == ROBOKY));
 
 #ifdef _DEBUG
 	bool bBaseUnlocked = (colorID >= COLORMIN && colorID <= COLORLIMIT);
+
+	std::cout << "[*] IsSelectableCharaColorID: charaID: " << charaID << ", colorID: " << colorID << ", costumeID: " << costumeID << ", bBaseUnlocked: " << bBaseUnlocked << ", bCustomUnlock: " << bCustomUnlock << std::endl;
 #else
 	bool bBaseUnlocked = Orig_IsSelectableCharaColorID(charaID, colorID, costumeID);
 #endif

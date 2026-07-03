@@ -32,3 +32,4 @@
 #define UNIKA 30
 #define LUCY 31
 #define JAM 32
+#define ROBOKY 33
